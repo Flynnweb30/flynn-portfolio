@@ -1,5 +1,5 @@
 /**
- * Flynn James Portfolio Core Scripts v5
+ * Flynn James Portfolio Core Scripts v8
  * Professional Portfolio — Navigation, Modal, Form, Scroll Animations, Toast, Dropdown, Analytics
  */
 
@@ -7,16 +7,25 @@
 // Analytics Configuration
 // ================================================================
 const ANALYTICS_CONFIG = {
-  GA4_ID: 'G-SQ1Q59Q6V6', // Actual GA4 Measurement ID
+  GA4_ID: 'G-SQ1Q59Q6V6',
   ENABLED: true,
   DEBUG: false
+};
+
+// ================================================================
+// EmailJS Configuration
+// ================================================================
+const EMAILJS_CONFIG = {
+  PUBLIC_KEY: 'crekfvN6H352DXAfx',
+  SERVICE_ID: 'service_av4pfmh',
+  TEMPLATE_ID: 'template_dhede6o',
+  TO_EMAIL: 'va.flynnjames@gmail.com' // The email you want to receive submissions
 };
 
 // Initialize GA4
 function initAnalytics() {
   if (!ANALYTICS_CONFIG.ENABLED) return;
   
-  // Load GA4 script if not already loaded
   if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
     const script = document.createElement('script');
     script.async = true;
@@ -24,7 +33,6 @@ function initAnalytics() {
     document.head.appendChild(script);
   }
   
-  // Initialize dataLayer
   window.dataLayer = window.dataLayer || [];
   window.gtag = function() { window.dataLayer.push(arguments); };
   window.gtag('js', new Date());
@@ -54,53 +62,41 @@ function trackPageView(pageTitle, pagePath) {
   });
 }
 
-// Track Scroll Depth
-function trackScrollDepth() {
-  const thresholds = [25, 50, 75, 100];
-  const scrollDepthTracked = new Set();
-  
-  window.addEventListener('scroll', () => {
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercentage = (window.scrollY / scrollHeight) * 100;
-    
-    thresholds.forEach(threshold => {
-      if (scrollPercentage >= threshold && !scrollDepthTracked.has(threshold)) {
-        scrollDepthTracked.add(threshold);
-        trackEvent('scroll_depth', {
-          percent: threshold
-        });
-      }
-    });
-  });
-}
-
 // Initialize on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Analytics
   initAnalytics();
   
   // Track Page View
-  const pageTitle = document.title;
-  trackPageView(pageTitle);
-  
-  // Track Scroll Depth
-  trackScrollDepth();
+  trackPageView(document.title);
   
   // ================================================================
-  // 1. Mobile Navigation
+  // 1. Load EmailJS
+  // ================================================================
+  const emailScript = document.createElement('script');
+  emailScript.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  emailScript.async = true;
+  emailScript.onload = function() {
+    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+    console.log('✅ EmailJS initialized');
+  };
+  document.head.appendChild(emailScript);
+
+  // ================================================================
+  // 2. Mobile Navigation
   // ================================================================
   const navToggle = document.querySelector('[data-nav-toggle]');
   const navMenu = document.querySelector('[data-nav-menu]');
 
   if (navToggle && navMenu) {
-    navToggle.addEventListener('click', () => {
+    navToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       navToggle.classList.toggle('active');
       navMenu.classList.toggle('open');
       navToggle.setAttribute('aria-expanded', navMenu.classList.contains('open'));
       document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : '';
     });
 
-    // Close nav on link click
     navMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navToggle.classList.remove('active');
@@ -110,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close nav on outside click
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.navbar') && navMenu.classList.contains('open')) {
         navToggle.classList.remove('active');
@@ -122,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================================================================
-  // 2. Mobile Dropdown Toggle
+  // 3. Mobile Dropdown Toggle
   // ================================================================
   const dropdowns = document.querySelectorAll('.nav-dropdown');
   
@@ -133,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (toggle) {
           toggle.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             dropdown.classList.toggle('open');
           });
         }
@@ -143,11 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   handleDropdowns();
-  
   window.addEventListener('resize', handleDropdowns);
 
   // ================================================================
-  // 3. Navbar Scroll Effect
+  // 4. Navbar Scroll Effect
   // ================================================================
   const navbar = document.querySelector('.navbar');
   
@@ -163,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleScroll);
 
   // ================================================================
-  // 4. Scroll Reveal Animations
+  // 5. Scroll Reveal Animations
   // ================================================================
   const reveals = document.querySelectorAll('.reveal');
   const revealObserver = new IntersectionObserver((entries) => {
@@ -178,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
   reveals.forEach(el => revealObserver.observe(el));
 
   // ================================================================
-  // 5. Click Tracking
+  // 6. Click Tracking - DON'T prevent default on navigation links
   // ================================================================
   document.querySelectorAll('[data-track-click]').forEach(element => {
     element.addEventListener('click', (e) => {
@@ -192,72 +187,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================================================================
-  // 6. Inquiry Modal (Only on contact.html)
+  // 7. Smooth Scroll for Anchor Links ONLY
   // ================================================================
-  const modalOverlay = document.getElementById('inquiry-modal');
-  const modalTriggers = document.querySelectorAll('[data-open-inquiry]');
-  const modalClose = document.querySelector('[data-close-modal]');
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      
+      const target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        const headerOffset = 80;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition - headerOffset;
 
-  function openModal() {
-    if (modalOverlay) {
-      modalOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      trackEvent('modal_open', {
-        trigger: 'button_click'
-      });
-    }
-  }
-
-  function closeModal() {
-    if (modalOverlay) {
-      modalOverlay.classList.remove('active');
-      document.body.style.overflow = '';
-      trackEvent('modal_close', {});
-    }
-  }
-
-  modalTriggers.forEach(trigger => {
-    trigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal();
-    });
-  });
-
-  if (modalClose) {
-    modalClose.addEventListener('click', closeModal);
-  }
-
-  if (modalOverlay) {
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) {
-        closeModal();
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        
+        history.pushState(null, null, targetId);
       }
     });
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('active')) {
-      closeModal();
-    }
   });
 
   // ================================================================
-  // 7. Inquiry Form Submission (EmailJS)
+  // 8. Form Submission (EmailJS)
   // ================================================================
   const inquiryForms = document.querySelectorAll('[data-inquiry-form]');
-
-  const EMAILJS_PUBLIC_KEY = 'crekfvN6H352DXAfx';
-  const EMAILJS_SERVICE_ID = 'service_av4pfmh';
-  const EMAILJS_TEMPLATE_ID = 'template_dhede6o';
-
-  // Load EmailJS
-  const emailScript = document.createElement('script');
-  emailScript.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-  emailScript.async = true;
-  emailScript.onload = function() {
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-  };
-  document.head.appendChild(emailScript);
 
   inquiryForms.forEach(form => {
     form.addEventListener('submit', async (e) => {
@@ -279,24 +236,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
+          EMAILJS_CONFIG.SERVICE_ID,
+          EMAILJS_CONFIG.TEMPLATE_ID,
           {
             name: values.name,
             email: values.email,
             company: values.company || 'Not specified',
+            phone: values.phone || 'Not provided',
+            need: values.need || 'Not specified',
             message: values.message,
-            contact_method: values.contact_method || 'Not specified'
+            to_email: EMAILJS_CONFIG.TO_EMAIL,
+            reply_to: values.email
           }
         );
 
         trackEvent('contact_form_submit', {
-          contact_method: values.contact_method || 'Not specified'
+          need: values.need || 'Not specified',
+          has_phone: !!values.phone
         });
 
-        showToast('🚀 Inquiry sent! Flynn will follow up within 24 hours.');
+        showToast('🚀 Message sent! Flynn will follow up within 24 hours.');
         form.reset();
-        closeModal();
 
       } catch (error) {
         console.error('EmailJS Error:', error);
@@ -312,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================================================================
-  // 8. Toast System
+  // 9. Toast System
   // ================================================================
   const toast = document.querySelector('[data-toast]');
 
@@ -332,53 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================================================================
-  // 9. Smooth Scroll for Anchor Links
-  // ================================================================
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-      
-      const target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        const headerOffset = 80;
-        const elementPosition = target.getBoundingClientRect().top;
-        const offsetPosition = elementPosition - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-        
-        // Update URL without jumping
-        history.pushState(null, null, targetId);
-      }
-    });
-  });
-
-  // ================================================================
-  // 10. Active Navigation Highlight on Scroll
-  // ================================================================
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links > li > a');
-
-  if (sections.length && navLinks.length) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(link => {
-            link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`);
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-
-    sections.forEach(section => observer.observe(section));
-  }
-
-  // ================================================================
-  // 11. Dynamic Footer Year
+  // 10. Dynamic Footer Year
   // ================================================================
   const year = new Date().getFullYear();
   document.querySelectorAll('.footer-copy').forEach(el => {
@@ -386,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================================================================
-  // 12. External Link Tracking
+  // 11. External Link Tracking
   // ================================================================
   document.querySelectorAll('a[target="_blank"]').forEach(link => {
     link.addEventListener('click', () => {
@@ -397,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================================================================
-  // 13. Email & Phone Link Tracking
+  // 12. Email & Phone Link Tracking
   // ================================================================
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
     link.addEventListener('click', () => {
@@ -415,5 +329,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics');
+  console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics & EmailJS');
 });

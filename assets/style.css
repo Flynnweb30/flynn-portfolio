@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Flynn James — Portfolio Design System v4
+   Flynn James — Portfolio Design System v6
    Premium Dark Theme with Cyan/Blue Accents and Professional Imagery
    ========================================================================== */
 
@@ -2226,6 +2226,60 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
+   Contact Form Enhancements
+   ========================================================================== */
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--accent-cyan);
+}
+
+.form-checkbox label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.form-group select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 12px;
+}
+
+.form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+/* ==========================================================================
    Modal
    ========================================================================== */
 .modal-overlay {
@@ -2576,5 +2630,13 @@ h1, h2, h3, h4, h5, h6 {
   
   .service-card-large {
     border-radius: var(--radius-md);
+  }
+  
+  .contact-form-wrapper {
+    padding: 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }
