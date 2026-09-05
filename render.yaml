@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: flynn-james-portfolio
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: redirect
+        source: /sitemap.xml
+        destination: /sitemap.xml
+      - type: rewrite
+        source: /services-prospecting
+        destination: /services-prospecting.html
+      - type: rewrite
+        source: /services-appointment-setting
+        destination: /services-appointment-setting.html
+      - type: rewrite
+        source: /services-coaching
+        destination: /services-coaching.html

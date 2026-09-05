@@ -1,206 +1,319 @@
 /**
- * Flynn James Portfolio Core Scripts
- * Modern Playful UX: Custom Glow Cursor, 3D Card Tilt Physics, Animated Counters,
- * 1-Click Clipboard Copy, Modals, Fullscreen Nav, Slider, Toast, EmailJS Integration,
- * Floating Hello Button & Modal, Scroll-Based Animations with Color Transitions
+ * Flynn James Portfolio Core Scripts v5
+ * Professional Portfolio — Navigation, Modal, Form, Scroll Animations, Toast, Dropdown, Analytics
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Interactive Custom Glow Cursor on Desktop
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    const cursor = document.createElement('div');
-    cursor.className = 'custom-cursor';
-    document.body.appendChild(cursor);
+// ================================================================
+// Analytics Configuration
+// ================================================================
+const ANALYTICS_CONFIG = {
+  GA4_ID: 'G-SQ1Q59Q6V6', // Actual GA4 Measurement ID
+  ENABLED: true,
+  DEBUG: false
+};
 
-    window.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.clientX}px`;
-      cursor.style.top = `${e.clientY}px`;
-    });
-
-    const interactiveSelectors = 'a, button, .card, .metric-box, .tool-badge, .contact-channel-card, [data-modal-open]';
-    document.querySelectorAll(interactiveSelectors).forEach((el) => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-    });
+// Initialize GA4
+function initAnalytics() {
+  if (!ANALYTICS_CONFIG.ENABLED) return;
+  
+  // Load GA4 script if not already loaded
+  if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.GA4_ID}`;
+    document.head.appendChild(script);
   }
+  
+  // Initialize dataLayer
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function() { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', ANALYTICS_CONFIG.GA4_ID);
+}
 
-  // 2. Active Navigation Tab Highlight
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.navlinks, .footer-tab-link').forEach((link) => {
-    const href = link.getAttribute('href');
-    if (href === currentPath || (currentPath === '' && href === 'index.html')) {
-      link.classList.add('active');
+// Track Event
+function trackEvent(eventName, eventParams = {}) {
+  if (!ANALYTICS_CONFIG.ENABLED || typeof window.gtag !== 'function') {
+    if (ANALYTICS_CONFIG.DEBUG) {
+      console.log('[Analytics]', eventName, eventParams);
     }
+    return;
+  }
+  
+  window.gtag('event', eventName, eventParams);
+}
+
+// Track Page View
+function trackPageView(pageTitle, pagePath) {
+  if (!ANALYTICS_CONFIG.ENABLED || typeof window.gtag !== 'function') return;
+  
+  window.gtag('event', 'page_view', {
+    page_title: pageTitle,
+    page_location: window.location.href,
+    page_path: pagePath || window.location.pathname
   });
+}
 
-  // 3. Mobile Fullscreen Navigation
-  const menuToggle = document.querySelector('[data-menu-toggle]');
-  const menuOverlay = document.querySelector('[data-menu]');
-  const menuClose = document.querySelector('[data-menu-close]');
+// Track Scroll Depth
+function trackScrollDepth() {
+  const thresholds = [25, 50, 75, 100];
+  const scrollDepthTracked = new Set();
+  
+  window.addEventListener('scroll', () => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercentage = (window.scrollY / scrollHeight) * 100;
+    
+    thresholds.forEach(threshold => {
+      if (scrollPercentage >= threshold && !scrollDepthTracked.has(threshold)) {
+        scrollDepthTracked.add(threshold);
+        trackEvent('scroll_depth', {
+          percent: threshold
+        });
+      }
+    });
+  });
+}
 
-  function toggleMenu(state) {
-    if (!menuOverlay) return;
-    menuOverlay.classList.toggle('active', state);
-    if (menuToggle) {
-      menuToggle.setAttribute('aria-expanded', state);
-    }
-    document.body.style.overflow = state ? 'hidden' : '';
+// Initialize on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Analytics
+  initAnalytics();
+  
+  // Track Page View
+  const pageTitle = document.title;
+  trackPageView(pageTitle);
+  
+  // Track Scroll Depth
+  trackScrollDepth();
+  
+  // ================================================================
+  // 1. Mobile Navigation
+  // ================================================================
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navMenu = document.querySelector('[data-nav-menu]');
+
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('active');
+      navMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', navMenu.classList.contains('open'));
+      document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    // Close nav on link click
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close nav on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.navbar') && navMenu.classList.contains('open')) {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+    });
   }
 
-  if (menuToggle) menuToggle.addEventListener('click', () => toggleMenu(true));
-  if (menuClose) menuClose.addEventListener('click', () => toggleMenu(false));
+  // ================================================================
+  // 2. Mobile Dropdown Toggle
+  // ================================================================
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  
+  function handleDropdowns() {
+    if (window.innerWidth <= 768) {
+      dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        if (toggle) {
+          toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            dropdown.classList.toggle('open');
+          });
+        }
+      });
+    } else {
+      dropdowns.forEach(d => d.classList.remove('open'));
+    }
+  }
+  
+  handleDropdowns();
+  
+  window.addEventListener('resize', handleDropdowns);
 
-  // 4. Scroll Reveal Animations & Number Counter Trigger
+  // ================================================================
+  // 3. Navbar Scroll Effect
+  // ================================================================
+  const navbar = document.querySelector('.navbar');
+  
+  function handleScroll() {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }
+  
+  handleScroll();
+  window.addEventListener('scroll', handleScroll);
+
+  // ================================================================
+  // 4. Scroll Reveal Animations
+  // ================================================================
   const reveals = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('active');
-
-        const metricEl = entry.target.querySelector('.metric');
-        if (metricEl && !metricEl.dataset.counted) {
-          metricEl.dataset.counted = 'true';
-          animateMetric(metricEl);
-        }
-        observer.unobserve(entry.target);
+        revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-  reveals.forEach((el) => revealObserver.observe(el));
+  reveals.forEach(el => revealObserver.observe(el));
 
-  function animateMetric(el) {
-    const text = el.innerText.trim();
-    if (text.includes('$1.8M+')) {
-      runCount(el, 0, 1.8, 1200, (v) => `$${v.toFixed(1)}M+`);
-    } else if (text.includes('120-150%')) {
-      runCount(el, 0, 150, 1200, (v) => `${Math.round(v)}%`);
-    } else if (text.includes('30+')) {
-      runCount(el, 0, 30, 1000, (v) => `${Math.round(v)}+`);
-    } else if (text.includes('150–500')) {
-      runCount(el, 0, 500, 1200, (v) => `${Math.round(v)}+`);
-    } else if (text.includes('11+')) {
-      runCount(el, 0, 11, 800, (v) => `${Math.round(v)}+`);
-    }
-  }
-
-  function runCount(el, start, end, duration, formatFn) {
-    const startTime = performance.now();
-    function update(currentTime) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = start + (end - start) * ease;
-      el.textContent = formatFn(current);
-      if (progress < 1) requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
-  }
-
-  // 5. 3D Tilt Effect on Cards & Metric Tiles
-  if (window.matchMedia('(hover: hover)').matches) {
-    const tiltElements = document.querySelectorAll('.card, .metric-box, .contact-channel-card');
-    tiltElements.forEach((card) => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const tiltX = (y / (rect.height / 2)) * -6;
-        const tiltY = (x / (rect.width / 2)) * 6;
-        card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-6px)`;
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
+  // ================================================================
+  // 5. Click Tracking
+  // ================================================================
+  document.querySelectorAll('[data-track-click]').forEach(element => {
+    element.addEventListener('click', (e) => {
+      const eventName = element.getAttribute('data-track-click');
+      trackEvent(eventName, {
+        element_type: element.tagName.toLowerCase(),
+        element_text: element.textContent.trim().substring(0, 50),
+        href: element.href || element.getAttribute('href') || ''
       });
     });
-  }
-
-  // 6. Modals System (Experience Page)
-  const modalTriggers = document.querySelectorAll('[data-modal-open]');
-  const modalCloses = document.querySelectorAll('[data-modal-close]');
-  const modals = document.querySelectorAll('.modal');
-
-  modalTriggers.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const modalId = btn.getAttribute('data-modal-open');
-      const targetModal = document.getElementById(modalId);
-      if (targetModal) targetModal.classList.add('active');
-    });
   });
 
-  modalCloses.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      modals.forEach((m) => m.classList.remove('active'));
-    });
-  });
+  // ================================================================
+  // 6. Inquiry Modal
+  // ================================================================
+  const modalOverlay = document.getElementById('inquiry-modal');
+  const modalTriggers = document.querySelectorAll('[data-open-inquiry]');
+  const modalClose = document.querySelector('[data-close-modal]');
 
-  window.addEventListener('click', (e) => {
-    modals.forEach((m) => {
-      if (e.target === m) m.classList.remove('active');
-    });
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      modals.forEach((m) => m.classList.remove('active'));
-      toggleMenu(false);
+  function openModal() {
+    if (modalOverlay) {
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      trackEvent('modal_open', {
+        trigger: 'button_click'
+      });
     }
-  });
-
-  // 7. Testimonial & Wins Slider
-  const track = document.querySelector('.slider-track');
-  const slides = document.querySelectorAll('.slide');
-  const prevBtn = document.querySelector('[data-slide-prev]');
-  const nextBtn = document.querySelector('[data-slide-next]');
-  const dots = document.querySelectorAll('.slider-dot');
-
-  let currentSlide = 0;
-  const totalSlides = slides.length;
-
-  function updateSlider(index) {
-    if (!track || totalSlides === 0) return;
-    currentSlide = (index + totalSlides) % totalSlides;
-    track.style.transform = `translateX(-${currentSlide * 100}%)`;
-    dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
   }
 
-  if (prevBtn) prevBtn.addEventListener('click', () => updateSlider(currentSlide - 1));
-  if (nextBtn) nextBtn.addEventListener('click', () => updateSlider(currentSlide + 1));
-  dots.forEach((dot, idx) => {
-    dot.addEventListener('click', () => updateSlider(idx));
-  });
-
-  let touchStartX = 0;
-  let touchEndX = 0;
-  if (track) {
-    track.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    track.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 50) {
-        updateSlider(currentSlide + 1);
-      } else if (touchEndX - touchStartX > 50) {
-        updateSlider(currentSlide - 1);
-      }
-    }, { passive: true });
+  function closeModal() {
+    if (modalOverlay) {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      trackEvent('modal_close', {});
+    }
   }
 
-  // 8. 1-Click Clipboard Copy on Contact Cards
-  const copyEmailCards = document.querySelectorAll('[data-copy-email]');
-  copyEmailCards.forEach((card) => {
-    card.addEventListener('click', (e) => {
+  modalTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
       e.preventDefault();
-      const email = 'va.flynnjames@gmail.com';
-      navigator.clipboard.writeText(email).then(() => {
-        showToast(`⚡ Copied ${email} to clipboard!`);
-      });
+      openModal();
     });
   });
 
-  // 9. Toast System
+  if (modalClose) {
+    modalClose.addEventListener('click', closeModal);
+  }
+
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        closeModal();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  // ================================================================
+  // 7. Inquiry Form Submission (EmailJS)
+  // ================================================================
+  const inquiryForms = document.querySelectorAll('[data-inquiry-form]');
+
+  const EMAILJS_PUBLIC_KEY = 'crekfvN6H352DXAfx';
+  const EMAILJS_SERVICE_ID = 'service_av4pfmh';
+  const EMAILJS_TEMPLATE_ID = 'template_dhede6o';
+
+  // Load EmailJS
+  const emailScript = document.createElement('script');
+  emailScript.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  emailScript.async = true;
+  emailScript.onload = function() {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  };
+  document.head.appendChild(emailScript);
+
+  inquiryForms.forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const values = Object.fromEntries(formData.entries());
+
+      // Basic validation
+      if (!values.name || !values.email || !values.message) {
+        showToast('⚠️ Please fill in all required fields.', true);
+        return;
+      }
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Sending... ⏳';
+      submitBtn.disabled = true;
+
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            name: values.name,
+            email: values.email,
+            company: values.company || 'Not specified',
+            message: values.message,
+            contact_method: values.contact_method || 'Not specified'
+          }
+        );
+
+        trackEvent('contact_form_submit', {
+          contact_method: values.contact_method || 'Not specified'
+        });
+
+        showToast('🚀 Inquiry sent! Flynn will follow up within 24 hours.');
+        form.reset();
+        closeModal();
+
+      } catch (error) {
+        console.error('EmailJS Error:', error);
+        trackEvent('contact_form_error', {
+          error_message: error.message
+        });
+        showToast('❌ Something went wrong. Please try again or email directly.', true);
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  });
+
+  // ================================================================
+  // 8. Toast System
+  // ================================================================
   const toast = document.querySelector('[data-toast]');
 
   function showToast(msg, isError = false) {
@@ -208,155 +321,99 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.textContent = msg;
     toast.classList.add('show');
     if (isError) {
-      toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+      toast.classList.add('error');
     } else {
-      toast.style.background = 'var(--accent-gradient)';
+      toast.classList.remove('error');
     }
-    setTimeout(() => {
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
       toast.classList.remove('show');
-      toast.style.background = 'var(--accent-gradient)';
     }, 5000);
   }
 
-  // 10. EmailJS Integration
-  const demoForm = document.querySelector('[data-demo-form]');
-
-  const EMAILJS_PUBLIC_KEY = 'crekfvN6H352DXAfx';
-  const EMAILJS_SERVICE_ID = 'service_av4pfmh';
-  const EMAILJS_TEMPLATE_ID = 'template_dhede6o';
-
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-  script.async = true;
-  script.onload = function() {
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-  };
-  document.head.appendChild(script);
-
-  if (demoForm) {
-    demoForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(demoForm);
-      const formValues = Object.fromEntries(formData.entries());
-
-      if (!formValues.name || !formValues.email || !formValues.message) {
-        showToast('⚠️ Please fill in all required fields.', true);
-        return;
-      }
-
-      const submitBtn = demoForm.querySelector('.button');
-      const originalText = submitBtn.textContent;
-      submitBtn.textContent = 'Sending... ⏳';
-      submitBtn.disabled = true;
-      demoForm.querySelectorAll('.text-field').forEach(field => field.disabled = true);
-
-      try {
-        const response = await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          {
-            name: formValues.name,
-            email: formValues.email,
-            company: formValues.company || 'Not specified',
-            message: formValues.message
-          }
-        );
-
-        console.log('Email sent successfully:', response);
-        showToast('🚀 Connection initiated! Flynn will follow up within 24 hours.');
-        demoForm.reset();
-
-      } catch (error) {
-        console.error('EmailJS Error:', error);
-        showToast('❌ Something went wrong. Please try again or email directly.', true);
-      } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-        demoForm.querySelectorAll('.text-field').forEach(field => field.disabled = false);
-      }
-    });
-  }
-
-  // 11. Floating Hello Button & Modal (Chatbot-Style - Compact)
-  const floatingBtn = document.getElementById('floatingBtn');
-  const floatingModal = document.getElementById('floatingModal');
-  const floatingModalClose = document.getElementById('floatingModalClose');
-  const body = document.body;
-
-  // Check if we're on the Contact page - hide the button
-  const isContactPage = window.location.pathname.includes('contact.html');
-  if (isContactPage && floatingBtn) {
-    floatingBtn.classList.add('hidden');
-  }
-
-  if (floatingBtn && floatingModal) {
-    // Open modal with expansion animation from button position
-    floatingBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      floatingModal.classList.add('active');
-      body.style.overflow = 'hidden';
-    });
-
-    // Close modal
-    function closeFloatingModal() {
-      floatingModal.classList.remove('active');
-      body.style.overflow = '';
-    }
-
-    if (floatingModalClose) {
-      floatingModalClose.addEventListener('click', closeFloatingModal);
-    }
-
-    // Click outside to close
-    floatingModal.addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeFloatingModal();
-      }
-    });
-
-    // ESC key to close
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && floatingModal.classList.contains('active')) {
-        closeFloatingModal();
-      }
-    });
-
-    // Prevent body scroll when modal is open (additional safety)
-    const observer = new MutationObserver(function() {
-      if (floatingModal.classList.contains('active')) {
-        body.style.overflow = 'hidden';
-      }
-    });
-    observer.observe(floatingModal, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  // 12. Scroll-Based Animations for Logo and Menu with Color Transitions
-  const templateLogo = document.querySelector('.template-logo .logo-text');
-  const menuToggleIcon = document.querySelector('.menu-toggle');
-
-  let scrollTimeout;
-
-  if (templateLogo) {
-    window.addEventListener('scroll', function() {
-      // Add scrolling class to logo
-      templateLogo.classList.add('scrolling');
+  // ================================================================
+  // 9. Smooth Scroll for Anchor Links
+  // ================================================================
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
       
-      // Add scrolling class to menu
-      if (menuToggleIcon) {
-        menuToggleIcon.classList.add('scrolling');
+      const target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        const headerOffset = 80;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        
+        // Update URL without jumping
+        history.pushState(null, null, targetId);
       }
-
-      // Clear previous timeout
-      clearTimeout(scrollTimeout);
-
-      // Set timeout to remove scrolling class after scrolling stops
-      scrollTimeout = setTimeout(function() {
-        templateLogo.classList.remove('scrolling');
-        if (menuToggleIcon) {
-          menuToggleIcon.classList.remove('scrolling');
-        }
-      }, 350);
     });
+  });
+
+  // ================================================================
+  // 10. Active Navigation Highlight on Scroll
+  // ================================================================
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links > li > a');
+
+  if (sections.length && navLinks.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(section => observer.observe(section));
   }
+
+  // ================================================================
+  // 11. Dynamic Footer Year
+  // ================================================================
+  const year = new Date().getFullYear();
+  document.querySelectorAll('.footer-copy').forEach(el => {
+    el.textContent = el.textContent.replace(/\d{4}/, year);
+  });
+
+  // ================================================================
+  // 12. External Link Tracking
+  // ================================================================
+  document.querySelectorAll('a[target="_blank"]').forEach(link => {
+    link.addEventListener('click', () => {
+      trackEvent('external_link_click', {
+        url: link.href
+      });
+    });
+  });
+
+  // ================================================================
+  // 13. Email & Phone Link Tracking
+  // ================================================================
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      trackEvent('email_click', {
+        email: link.href.replace('mailto:', '')
+      });
+    });
+  });
+
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      trackEvent('phone_click', {
+        phone: link.href.replace('tel:', '')
+      });
+    });
+  });
+
+  console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics');
 });

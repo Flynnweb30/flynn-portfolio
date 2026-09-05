@@ -1,0 +1,9 @@
+# Allow all bots to crawl
+User-agent: *
+Allow: /
+
+# Disallow sensitive directories (if any)
+Disallow: /assets/
+
+# Sitemap location
+Sitemap: https://flynn-james-sdr-portfolio.onrender.com/sitemap.xml
