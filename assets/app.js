@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================================================================
-  // 6. Inquiry Modal
+  // 6. Inquiry Modal (Only on contact.html)
   // ================================================================
   const modalOverlay = document.getElementById('inquiry-modal');
   const modalTriggers = document.querySelectorAll('[data-open-inquiry]');
