@@ -1,5 +1,5 @@
 /**
- * Flynn James Portfolio Core Scripts v11
+ * Flynn James Portfolio Core Scripts v12
  * Professional Portfolio — Navigation, Modal, Form, Scroll Animations, Toast, Dropdown, Analytics
  */
 
@@ -20,18 +20,6 @@ const EMAILJS_CONFIG = {
   SERVICE_ID: 'service_av4pfmh',
   TEMPLATE_ID: 'template_dhede6o',
   TO_EMAIL: 'va.flynnjames@gmail.com'
-};
-
-// ================================================================
-// A/B Testing Configuration (NEW)
-// ================================================================
-const AB_TEST_CONFIG = {
-  ENABLED: true,
-  STORAGE_KEY: 'flynn_cta_variant',
-  VARIANTS: {
-    A: 'Let\'s Talk',
-    B: 'Book a Call'
-  }
 };
 
 // ================================================================
@@ -76,91 +64,6 @@ function trackPageView(pageTitle, pagePath) {
   });
 }
 
-// ================================================================
-// A/B Testing Function (NEW)
-// ================================================================
-function initABTesting() {
-  if (!AB_TEST_CONFIG.ENABLED) return;
-  
-  // Get or assign variant
-  let variant = localStorage.getItem(AB_TEST_CONFIG.STORAGE_KEY);
-  if (!variant) {
-    variant = Math.random() < 0.5 ? 'A' : 'B';
-    localStorage.setItem(AB_TEST_CONFIG.STORAGE_KEY, variant);
-  }
-  
-  // Apply variant to CTA buttons
-  document.querySelectorAll('.btn-primary').forEach(btn => {
-    if (btn.classList.contains('nav-cta') || btn.classList.contains('hero-cta')) {
-      btn.textContent = AB_TEST_CONFIG.VARIANTS[variant];
-      trackEvent('ab_test_view', { variant: variant, element: btn.className });
-    }
-  });
-  
-  // Track clicks on variant
-  document.querySelectorAll('.btn-primary').forEach(btn => {
-    btn.addEventListener('click', () => {
-      trackEvent('ab_test_click', { 
-        variant: variant, 
-        element: btn.className 
-      });
-    });
-  });
-}
-
-// ================================================================
-// Exit Intent Popup (NEW)
-// ================================================================
-function initExitIntent() {
-  const popup = document.getElementById('exitPopup');
-  if (!popup) return;
-  
-  let hasShown = false;
-  
-  function showPopup() {
-    if (!hasShown) {
-      hasShown = true;
-      popup.classList.add('active');
-      trackEvent('exit_intent_triggered');
-    }
-  }
-  
-  function closePopup() {
-    popup.classList.remove('active');
-    trackEvent('exit_popup_closed');
-  }
-  
-  // Show on mouse leave (desktop)
-  document.addEventListener('mouseout', (e) => {
-    if (!e.relatedTarget && e.clientY < 50 && !hasShown) {
-      showPopup();
-    }
-  });
-  
-  // Show on scroll up quickly (mobile)
-  let lastScrollY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const currentScrollY = window.scrollY;
-    if (currentScrollY < lastScrollY - 200 && !hasShown) {
-      showPopup();
-    }
-    lastScrollY = currentScrollY;
-  });
-  
-  // Close popup
-  const closeBtn = document.querySelector('.exit-popup-close');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closePopup);
-  }
-  
-  // Close on outside click
-  popup.addEventListener('click', (e) => {
-    if (e.target === popup) {
-      closePopup();
-    }
-  });
-}
-
 // Initialize on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Analytics
@@ -168,12 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Track Page View
   trackPageView(document.title);
-  
-  // Initialize A/B Testing
-  initABTesting();
-  
-  // Initialize Exit Intent
-  initExitIntent();
   
   // ================================================================
   // 1. Load EmailJS
@@ -328,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(form);
       const values = Object.fromEntries(formData.entries());
 
-      // Basic validation
       if (!values.name || !values.email || !values.message) {
         showToast('⚠️ Please fill in all required fields.', true);
         return;
@@ -470,10 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     trackEvent('time_on_page_60_seconds');
   }, 60000);
-  
-  setTimeout(() => {
-    trackEvent('time_on_page_120_seconds');
-  }, 120000);
 
   // ================================================================
   // 15. Modal Handling
@@ -504,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Close modal on outside click
   modalOverlays.forEach(overlay => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
@@ -514,21 +405,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Close modal on Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       modalOverlays.forEach(overlay => {
         overlay.classList.remove('active');
       });
       document.body.style.overflow = '';
-      
-      // Close exit popup on Escape
-      const exitPopup = document.getElementById('exitPopup');
-      if (exitPopup) {
-        exitPopup.classList.remove('active');
-      }
     }
   });
 
-  console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics, A/B Testing & Exit Intent');
+  console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics');
 });

@@ -1,8 +1,8 @@
-# Allow all bots to crawl
+# Allow all bots to crawl all resources
 User-agent: *
 Allow: /
 
-# Block sensitive directories (if any)
+# Block only sensitive directories (if any)
 Disallow: /admin/
 Disallow: /private/
 
