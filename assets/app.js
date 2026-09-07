@@ -1,5 +1,5 @@
 /**
- * Flynn James Portfolio Core Scripts v8
+ * Flynn James Portfolio Core Scripts v9
  * Professional Portfolio — Navigation, Modal, Form, Scroll Animations, Toast, Dropdown, Analytics
  */
 
@@ -327,6 +327,105 @@ document.addEventListener('DOMContentLoaded', () => {
         phone: link.href.replace('tel:', '')
       });
     });
+  });
+
+  // ================================================================
+  // 13. Scroll Depth Tracking (NEW)
+  // ================================================================
+  function trackScrollDepth() {
+    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    
+    if (scrollPercent > 25 && !window._scrolled25) {
+      window._scrolled25 = true;
+      trackEvent('scroll_25_percent');
+    }
+    if (scrollPercent > 50 && !window._scrolled50) {
+      window._scrolled50 = true;
+      trackEvent('scroll_50_percent');
+    }
+    if (scrollPercent > 75 && !window._scrolled75) {
+      window._scrolled75 = true;
+      trackEvent('scroll_75_percent');
+    }
+    if (scrollPercent > 95 && !window._scrolled95) {
+      window._scrolled95 = true;
+      trackEvent('scroll_95_percent');
+    }
+  }
+  
+  window.addEventListener('scroll', trackScrollDepth, { passive: true });
+
+  // ================================================================
+  // 14. Time on Page Tracking (NEW)
+  // ================================================================
+  setTimeout(() => {
+    trackEvent('time_on_page_30_seconds');
+  }, 30000);
+  
+  setTimeout(() => {
+    trackEvent('time_on_page_60_seconds');
+  }, 60000);
+  
+  setTimeout(() => {
+    trackEvent('time_on_page_120_seconds');
+  }, 120000);
+
+  // ================================================================
+  // 15. Exit Intent Detection (NEW)
+  // ================================================================
+  document.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget && e.clientY < 50) {
+      trackEvent('exit_intent_detected');
+    }
+  });
+
+  // ================================================================
+  // 16. Modal Handling (NEW - for inquiry forms)
+  // ================================================================
+  const openInquiryButtons = document.querySelectorAll('[data-open-inquiry]');
+  const modalOverlays = document.querySelectorAll('.modal-overlay');
+  const closeModalButtons = document.querySelectorAll('[data-close-modal]');
+
+  openInquiryButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetModal = document.querySelector(button.getAttribute('href'));
+      if (targetModal) {
+        targetModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        trackEvent('inquiry_modal_open');
+      }
+    });
+  });
+
+  closeModalButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const modal = button.closest('.modal-overlay');
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+
+  // Close modal on outside click
+  modalOverlays.forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      modalOverlays.forEach(overlay => {
+        overlay.classList.remove('active');
+      });
+      document.body.style.overflow = '';
+    }
   });
 
   console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics & EmailJS');

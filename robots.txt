@@ -4,6 +4,7 @@ Allow: /
 
 # Disallow sensitive directories (if any)
 Disallow: /assets/
+Disallow: /insights.html
 
 # Sitemap location
 Sitemap: https://flynn-james-sdr-portfolio.onrender.com/sitemap.xml

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Flynn James — Portfolio Design System v6
+   Flynn James — Portfolio Design System v7
    Premium Dark Theme with Cyan/Blue Accents and Professional Imagery
    ========================================================================== */
 
@@ -97,6 +97,13 @@ a {
   color: inherit;
   text-decoration: none;
   transition: var(--transition-fast);
+}
+
+/* Focus Visible for Accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ==========================================================================
