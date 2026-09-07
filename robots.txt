@@ -2,9 +2,9 @@
 User-agent: *
 Allow: /
 
-# Disallow sensitive directories (if any)
-Disallow: /assets/
-Disallow: /insights.html
+# Block sensitive directories (if any)
+Disallow: /admin/
+Disallow: /private/
 
 # Sitemap location
 Sitemap: https://flynn-james-sdr-portfolio.onrender.com/sitemap.xml
