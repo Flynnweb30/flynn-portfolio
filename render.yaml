@@ -2,12 +2,9 @@ services:
   - type: web
     name: flynn-james-portfolio
     env: static
-    buildCommand: npm run build
-    staticPublishPath: ./dist
+    buildCommand: null
+    staticPublishPath: .
     routes:
-      - type: redirect
-        source: /sitemap.xml
-        destination: /sitemap.xml
       - type: rewrite
         source: /services-prospecting
         destination: /services-prospecting.html
@@ -17,3 +14,16 @@ services:
       - type: rewrite
         source: /services-coaching
         destination: /services-coaching.html
+      - type: rewrite
+        source: /how-i-work
+        destination: /how-i-work.html
+      - type: rewrite
+        source: /experience
+        destination: /experience.html
+      - type: rewrite
+        source: /contact
+        destination: /contact.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=31536000

@@ -1,0 +1,16 @@
+{
+  "name": "flynn-james-portfolio",
+  "version": "1.0.0",
+  "description": "B2B Sales & Lead Generation Professional Portfolio",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build required'",
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
