@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Flynn James — Portfolio Design System v8
+   Flynn James — Portfolio Design System v9
    Premium Dark Theme with Cyan/Blue Accents and Professional Imagery
    ========================================================================== */
 
@@ -104,6 +104,21 @@ a {
   outline: 2px solid var(--accent-cyan);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* ==========================================================================
+   Screen Reader Only (NEW)
+   ========================================================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* ==========================================================================
@@ -264,7 +279,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   Breadcrumb Navigation (NEW)
+   Breadcrumb Navigation
    ========================================================================== */
 .breadcrumb-nav {
   padding: 16px 0;
@@ -1968,7 +1983,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   SEO Content Styles (NEW)
+   SEO Content Styles
    ========================================================================== */
 .seo-content-wrapper {
   max-width: 800px;
@@ -2012,7 +2027,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   FAQ Styles (NEW)
+   FAQ Styles
    ========================================================================== */
 .faq-grid {
   max-width: 800px;
@@ -2651,6 +2666,16 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-cyan);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2);
+}
+
+/* Footer Heading (NEW) */
+.footer-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
 }
 
 @media (max-width: 768px) {

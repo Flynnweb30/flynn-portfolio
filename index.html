@@ -10,7 +10,7 @@
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0a0f1c">
 <link rel="canonical" href="https://flynn-james-sdr-portfolio.onrender.com/">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230a0f1c'/><rect x='1' y='1' width='30' height='30' rx='7' fill='none' stroke='%2322d3ee' stroke-width='1.5' stroke-opacity='0.6'/><path d='M9 8h14v3.5H13v3.5h8v3.5h-8V24H9V8z' fill='url(%23g)'/><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2322d3ee'/><stop offset='100%25' stop-color='%233b82f6'/></linearGradient></defs></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0f1c'/%3E%3Crect x='1' y='1' width='30' height='30' rx='7' fill='none' stroke='%2322d3ee' stroke-width='1.5' stroke-opacity='0.6'/%3E%3Cpath d='M9 8h14v3.5H13v3.5h8v3.5h-8V24H9V8z' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2322d3ee'/%3E%3Cstop offset='100%25' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
 
 <!-- Preconnect for Performance -->
 <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
@@ -75,7 +75,7 @@
 </div>
 
 <!-- Navigation -->
-<nav class="navbar" role="navigation">
+<nav class="navbar" aria-label="Main navigation">
   <div class="nav-container">
     <a class="nav-logo" href="index.html" aria-label="Flynn James home">
       <span class="logo-mark">F</span>
@@ -144,7 +144,7 @@
 <!-- ============================================================
      HERO SECTION
      ============================================================ -->
-<section class="hero-section">
+<section class="hero-section" aria-label="Hero section">
   <div class="container">
     <div class="hero-grid">
       <div class="hero-content">
@@ -182,7 +182,7 @@
 <!-- ============================================================
      CREDIBILITY BAR
      ============================================================ -->
-<section class="credibility-bar">
+<section class="credibility-bar" aria-label="Credentials">
   <div class="container">
     <div class="credibility-grid">
       <div class="credibility-item">
@@ -212,7 +212,7 @@
 <!-- ============================================================
      WHAT I DO — Core Capabilities
      ============================================================ -->
-<section class="section" id="what-i-do">
+<section class="section" id="what-i-do" aria-label="What I do">
   <div class="container">
     <div class="section-header">
       <div class="section-badge">What I Can Do</div>
@@ -275,7 +275,7 @@
 <!-- ============================================================
      RESULTS / PROOF SECTION
      ============================================================ -->
-<section class="section dark-version" id="results">
+<section class="section dark-version" id="results" aria-label="Results">
   <div class="container">
     <div class="section-header">
       <div class="section-badge">Proof / Results</div>
@@ -316,7 +316,7 @@
 <!-- ============================================================
      HOW I WORK — Process Overview
      ============================================================ -->
-<section class="section" id="how-i-work">
+<section class="section" id="how-i-work" aria-label="How I work">
   <div class="container">
     <div class="section-header">
       <div class="section-badge">How I Work</div>
@@ -361,7 +361,7 @@
 <!-- ============================================================
      WHY WORK WITH ME
      ============================================================ -->
-<section class="section dark-version">
+<section class="section dark-version" aria-label="Why work with me">
   <div class="container">
     <div class="why-grid">
       <div class="why-content">
@@ -404,7 +404,7 @@
 <!-- ============================================================
      FINAL CTA
      ============================================================ -->
-<section class="section" id="cta-final">
+<section class="section" id="cta-final" aria-label="Call to action">
   <div class="container">
     <div class="cta-final-wrapper">
       <div class="cta-final-content">
@@ -439,14 +439,15 @@
         <p class="footer-copy">© 2026 Flynn James Q. Pontino · Remote Global</p>
       </div>
       <div class="footer-nav">
-        <h4>Navigation</h4>
+        <h2 class="sr-only">Navigation</h2>
+        <h3 class="footer-heading">Navigation</h3>
         <a href="experience.html" data-track-click="footer_experience">Experience</a>
         <a href="services.html" data-track-click="footer_services">Services</a>
         <a href="how-i-work.html" data-track-click="footer_how_i_work">How I Work</a>
         <a href="contact.html" data-track-click="footer_contact">Contact</a>
       </div>
       <div>
-        <h4 style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Connect</h4>
+        <h3 class="footer-heading">Connect</h3>
         <div class="footer-social">
           <a href="https://www.linkedin.com/in/fjpontino" target="_blank" rel="noopener" aria-label="LinkedIn" data-track-click="social_linkedin">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
