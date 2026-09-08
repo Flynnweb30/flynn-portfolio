@@ -1,5 +1,5 @@
 /**
- * Flynn James Portfolio Core Scripts v12
+ * Flynn James Portfolio Core Scripts v13 - Optimized
  * Professional Portfolio — Navigation, Modal, Form, Scroll Animations, Toast, Dropdown, Analytics
  */
 
@@ -9,7 +9,8 @@
 const ANALYTICS_CONFIG = {
   GA4_ID: 'G-SQ1Q59Q6V6',
   ENABLED: true,
-  DEBUG: false
+  DEBUG: false,
+  DELAY_MS: 2000 // Delay GA4 load to prioritize rendering
 };
 
 // ================================================================
@@ -23,22 +24,31 @@ const EMAILJS_CONFIG = {
 };
 
 // ================================================================
-// Initialize GA4
+// Initialize GA4 (Deferred)
 // ================================================================
 function initAnalytics() {
   if (!ANALYTICS_CONFIG.ENABLED) return;
   
-  if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.GA4_ID}`;
-    document.head.appendChild(script);
-  }
+  // Check if already loaded
+  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) return;
+  
+  const script = document.createElement('script');
+  script.async = true;
+  script.defer = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.GA4_ID}`;
+  document.head.appendChild(script);
   
   window.dataLayer = window.dataLayer || [];
   window.gtag = function() { window.dataLayer.push(arguments); };
   window.gtag('js', new Date());
   window.gtag('config', ANALYTICS_CONFIG.GA4_ID);
+  
+  // Track initial page view
+  window.gtag('event', 'page_view', {
+    page_title: document.title,
+    page_location: window.location.href,
+    page_path: window.location.pathname
+  });
 }
 
 // Track Event
@@ -49,14 +59,12 @@ function trackEvent(eventName, eventParams = {}) {
     }
     return;
   }
-  
   window.gtag('event', eventName, eventParams);
 }
 
-// Track Page View
+// Track Page View (for SPA-like navigation)
 function trackPageView(pageTitle, pagePath) {
   if (!ANALYTICS_CONFIG.ENABLED || typeof window.gtag !== 'function') return;
-  
   window.gtag('event', 'page_view', {
     page_title: pageTitle,
     page_location: window.location.href,
@@ -64,20 +72,28 @@ function trackPageView(pageTitle, pagePath) {
   });
 }
 
-// Initialize on DOMContentLoaded
+// ================================================================
+// Debounce Utility
+// ================================================================
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// ================================================================
+// DOM Content Loaded - Main Initialization
+// ================================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Analytics
-  initAnalytics();
-  
-  // Track Page View
-  trackPageView(document.title);
   
   // ================================================================
-  // 1. Load EmailJS
+  // 1. Load EmailJS (Deferred - not critical for rendering)
   // ================================================================
   const emailScript = document.createElement('script');
   emailScript.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-  emailScript.async = true;
+  emailScript.defer = true;
   emailScript.onload = function() {
     emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
     console.log('✅ EmailJS initialized');
@@ -108,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
+    // Close on outside click (single listener)
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.navbar') && navMenu.classList.contains('open')) {
         navToggle.classList.remove('active');
@@ -140,52 +157,91 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  handleDropdowns();
-  window.addEventListener('resize', handleDropdowns);
+  // Only attach once
+  if (!window._dropdownsAttached) {
+    handleDropdowns();
+    window._dropdownsAttached = true;
+  }
+  
+  // Debounced resize handler
+  window.addEventListener('resize', debounce(() => {
+    if (window.innerWidth > 768) {
+      dropdowns.forEach(d => d.classList.remove('open'));
+    }
+  }, 100), { passive: true });
 
   // ================================================================
-  // 4. Navbar Scroll Effect
+  // 4. Navbar Scroll Effect (Passive + Debounced)
   // ================================================================
   const navbar = document.querySelector('.navbar');
   
-  function handleScroll() {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
+  const handleScroll = debounce(() => {
+    if (navbar) {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
     }
-  }
+  }, 50);
   
-  handleScroll();
-  window.addEventListener('scroll', handleScroll);
+  if (navbar) {
+    handleScroll(); // Initial call
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
 
   // ================================================================
-  // 5. Scroll Reveal Animations
+  // 5. Scroll Reveal Animations (Optimized IntersectionObserver)
   // ================================================================
   const reveals = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-  reveals.forEach(el => revealObserver.observe(el));
-
-  // ================================================================
-  // 6. Click Tracking
-  // ================================================================
-  document.querySelectorAll('[data-track-click]').forEach(element => {
-    element.addEventListener('click', (e) => {
-      const eventName = element.getAttribute('data-track-click');
-      trackEvent(eventName, {
-        element_type: element.tagName.toLowerCase(),
-        element_text: element.textContent.trim().substring(0, 50),
-        href: element.href || element.getAttribute('href') || ''
+  
+  if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          revealObserver.unobserve(entry.target);
+        }
       });
-    });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    reveals.forEach(el => revealObserver.observe(el));
+  } else {
+    // Fallback - show all immediately
+    reveals.forEach(el => el.classList.add('active'));
+  }
+
+  // ================================================================
+  // 6. Click Tracking (Delegated - single listener)
+  // ================================================================
+  document.addEventListener('click', (e) => {
+    const clickTarget = e.target.closest('[data-track-click]');
+    if (clickTarget) {
+      const eventName = clickTarget.getAttribute('data-track-click');
+      trackEvent(eventName, {
+        element_type: clickTarget.tagName.toLowerCase(),
+        element_text: clickTarget.textContent.trim().substring(0, 50),
+        href: clickTarget.href || clickTarget.getAttribute('href') || ''
+      });
+    }
+    
+    // External link tracking
+    const externalLink = e.target.closest('a[target="_blank"]');
+    if (externalLink) {
+      trackEvent('external_link_click', { url: externalLink.href });
+    }
+    
+    // Email link tracking
+    const emailLink = e.target.closest('a[href^="mailto:"]');
+    if (emailLink) {
+      trackEvent('email_click', { email: emailLink.href.replace('mailto:', '') });
+    }
+    
+    // Phone link tracking
+    const phoneLink = e.target.closest('a[href^="tel:"]');
+    if (phoneLink) {
+      trackEvent('phone_click', { phone: phoneLink.href.replace('tel:', '') });
+    }
   });
 
   // ================================================================
@@ -225,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(form);
       const values = Object.fromEntries(formData.entries());
 
+      // Client-side validation
       if (!values.name || !values.email || !values.message) {
         showToast('⚠️ Please fill in all required fields.', true);
         return;
@@ -236,6 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = true;
 
       try {
+        // Wait for EmailJS to be ready
+        if (typeof emailjs === 'undefined') {
+          throw new Error('EmailJS not loaded yet');
+        }
+        
         await emailjs.send(
           EMAILJS_CONFIG.SERVICE_ID,
           EMAILJS_CONFIG.TEMPLATE_ID,
@@ -292,6 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 5000);
   }
 
+  // Expose showToast globally for any inline usage
+  window.showToast = showToast;
+
   // ================================================================
   // 10. Dynamic Footer Year
   // ================================================================
@@ -301,39 +366,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================================================================
-  // 11. External Link Tracking
+  // 11. Scroll Depth Tracking (Debounced + Passive)
   // ================================================================
-  document.querySelectorAll('a[target="_blank"]').forEach(link => {
-    link.addEventListener('click', () => {
-      trackEvent('external_link_click', {
-        url: link.href
-      });
-    });
-  });
-
-  // ================================================================
-  // 12. Email & Phone Link Tracking
-  // ================================================================
-  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
-    link.addEventListener('click', () => {
-      trackEvent('email_click', {
-        email: link.href.replace('mailto:', '')
-      });
-    });
-  });
-
-  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
-    link.addEventListener('click', () => {
-      trackEvent('phone_click', {
-        phone: link.href.replace('tel:', '')
-      });
-    });
-  });
-
-  // ================================================================
-  // 13. Scroll Depth Tracking
-  // ================================================================
-  function trackScrollDepth() {
+  const trackScrollDepth = debounce(() => {
     const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
     
     if (scrollPercent > 25 && !window._scrolled25) {
@@ -352,12 +387,12 @@ document.addEventListener('DOMContentLoaded', () => {
       window._scrolled95 = true;
       trackEvent('scroll_95_percent');
     }
-  }
+  }, 200);
   
   window.addEventListener('scroll', trackScrollDepth, { passive: true });
 
   // ================================================================
-  // 14. Time on Page Tracking
+  // 12. Time on Page Tracking
   // ================================================================
   setTimeout(() => {
     trackEvent('time_on_page_30_seconds');
@@ -368,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 60000);
 
   // ================================================================
-  // 15. Modal Handling
+  // 13. Modal Handling
   // ================================================================
   const openInquiryButtons = document.querySelectorAll('[data-open-inquiry]');
   const modalOverlays = document.querySelectorAll('.modal-overlay');
@@ -414,5 +449,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  console.log('🚀 Flynn James Portfolio — Fully Loaded with Analytics');
+  console.log('🚀 Flynn James Portfolio — Optimized & Loaded');
 });
+
+// ================================================================
+// Initialize Analytics with Delay (After Load Event)
+// ================================================================
+if (ANALYTICS_CONFIG.ENABLED) {
+  // Delay analytics by DELAY_MS to allow first paint
+  setTimeout(initAnalytics, ANALYTICS_CONFIG.DELAY_MS);
+}
