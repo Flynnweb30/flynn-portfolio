@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Flynn James — Portfolio Design System v11
+   Flynn James — Portfolio Design System v13
    Premium Dark Theme with Cyan/Blue Accents and Professional Imagery
    ========================================================================== */
 
@@ -9,7 +9,6 @@
   --font-display: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
   
-  /* Color System */
   --bg-primary: #0a0f1c;
   --bg-secondary: #111827;
   --bg-tertiary: #1a2332;
@@ -29,7 +28,6 @@
   
   --gradient-primary: linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #8b5cf6 100%);
   --gradient-subtle: linear-gradient(135deg, rgba(34,211,238,0.1) 0%, rgba(59,130,246,0.1) 100%);
-  --gradient-playful: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #00c6ff 100%);
   
   --border-color: rgba(255, 255, 255, 0.08);
   --border-hover: rgba(34, 211, 238, 0.35);
@@ -45,11 +43,9 @@
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
   --shadow-glow: 0 8px 32px rgba(34, 211, 238, 0.15);
-  --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.35);
   
   --transition-fast: all 0.2s ease;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   
   --nav-height: 72px;
 }
@@ -1064,17 +1060,49 @@ h1, h2, h3, h4, h5, h6 {
 
 .testimonial-author {
   display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-cyan);
+  flex-shrink: 0;
+}
+
+.testimonial-author div {
+  display: flex;
   flex-direction: column;
 }
 
 .testimonial-author strong {
   color: #fff;
   font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .testimonial-author span {
   color: var(--text-muted);
   font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .testimonial-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .testimonial-author span {
+    font-size: 0.75rem;
+  }
 }
 
 /* ==========================================================================
@@ -1535,72 +1563,6 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.7;
   max-width: 600px;
   margin: 0 auto;
-}
-
-/* ==========================================================================
-   Exit Popup
-   ========================================================================== */
-.exit-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 9998;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
-}
-
-.exit-popup.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.exit-popup-content {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-hover);
-  border-radius: var(--radius-xl);
-  padding: 48px;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
-  position: relative;
-  box-shadow: var(--shadow-lg);
-}
-
-.exit-popup-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.exit-popup-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
-}
-
-.exit-popup h2 {
-  font-size: 1.5rem;
-  margin-bottom: 16px;
-}
-
-.exit-popup p {
-  color: var(--text-secondary);
-  margin-bottom: 24px;
 }
 
 /* ==========================================================================
@@ -2739,7 +2701,7 @@ h1, h2, h3, h4, h5, h6 {
   list-style: none;
 }
 
-.footer-nav h4 {
+.footer-heading {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-muted);
@@ -2785,16 +2747,6 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2);
 }
 
-/* Footer Heading */
-.footer-heading {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
-}
-
 @media (max-width: 768px) {
   .footer-grid {
     grid-template-columns: 1fr;
@@ -2812,7 +2764,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   Blog Styles (New)
+   Blog Styles
    ========================================================================== */
 .blog-grid {
   display: grid;
@@ -2929,6 +2881,35 @@ h1, h2, h3, h4, h5, h6 {
 
 .article-content strong {
   color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Blog NEW Badge
+   ========================================================================== */
+.nav-links > li > a[href*="blog"] {
+  position: relative;
+}
+
+.nav-links > li > a[href*="blog"]::after,
+.footer-nav a[href*="blog"]::after {
+  content: 'NEW';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--accent-cyan);
+  color: var(--bg-primary);
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .nav-links > li > a[href*="blog"]::after,
+  .footer-nav a[href*="blog"]::after {
+    display: none;
+  }
 }
 
 /* ==========================================================================
