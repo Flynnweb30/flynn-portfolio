@@ -80,47 +80,6 @@ Use a URL-prefix Search Console property for `https://flynnjamespontino-porfolio
 
 The portfolio includes a crawlable `/blog` hub plus five evergreen B2B outbound articles covering cold calling, appointment setting KPIs, cadences, meeting show rates, and SDR hiring.
 
-## Contact Calendar + Inline Email Verification
+## EmailJS contact form
 
-The `/contact` route is the dedicated booking page. It is not a dynamic popup from the main navigation.
-
-### Booking workflow
-
-1. **What brings you here?** — visitor selects the reason for contacting Flynn and can describe the desired outcome.
-2. **Let's get to know you** — visitor enters name, work email, and optional phone number.
-3. **Inline email verification** — clicking **Next** runs a subtle validation animation, checks email syntax, then checks the domain's MX records. When the domain is mail-enabled, a small **Verified** label appears directly beneath the email field and the visitor advances to the next step.
-4. **Pick a time** — visitor selects timezone, weekday, and available time.
-5. **Confirm your booking** — the existing booking API creates the appointment.
-
-The browser can reliably verify the address format and whether the domain advertises a receiving mail server. It cannot directly observe a later SMTP hard bounce after a provider accepts a message. A true `bounced` state requires a server-side email provider webhook or a dedicated email-verification service. The current UI therefore does not falsely claim that a mailbox is guaranteed to exist; **Verified** means the address passed syntax and MX validation.
-
-### EmailJS setup
-
-EmailJS remains centralized in `src/analytics.ts` and is used for the site's inquiry/email workflow. The inline booking validator does **not** send an OTP or expose a private API key.
-
-1. Open the EmailJS dashboard.
-2. Confirm public key `crekfvN6H352DXAfx` is active.
-3. Confirm service ID `service_av4pfmh` is connected to the intended sending mailbox.
-4. Confirm template ID `template_dhede6o` exists and accepts the current inquiry variables.
-5. Keep `{{reply_to}}` configured as the reply-to address.
-6. If your template uses a dynamic recipient, keep `{{to_email}}` configured appropriately.
-7. Test a normal inquiry submission from the site and confirm the message reaches `va.flynnjames@gmail.com`.
-8. Monitor the EmailJS provider logs for rejected or bounced messages. Client-side JavaScript cannot reliably detect a later SMTP bounce.
-9. Never place an EmailJS private key or provider secret in the browser. Only the public key belongs in the static frontend.
-
-### Optional true bounce detection
-
-For authoritative `deliverable`, `undeliverable`, or `bounced` states, connect a server-side email verification provider or your mail provider's webhook to the existing booking API. Keep that secret-backed logic on the server; do not put private verification credentials in the Vite bundle.
-
-### Production deployment
-
-Render remains configured as a static Vite site:
-- Build: `npm install && npm run build`
-- Publish directory: `dist`
-- SPA fallback: `/*` → `/index.html`
-- Sitemap and robots files remain explicit static assets.
-
-The existing booking API remains external at:
-`https://flynn-portfolio-1-api.onrender.com/api/create-booking`
-
-The portfolio static site does not require a new runtime dependency for email verification. The MX check uses Cloudflare's DNS-over-HTTPS JSON endpoint, while EmailJS handles the one-time verification email.
+See `EMAILJS_SETUP.md` for the complete EmailJS dashboard configuration, field mapping, owner notification template, customer auto-reply template, and end-to-end testing checklist. The Contact page is centralized through `src/analytics.ts` and the existing `data-inquiry-form` contract.

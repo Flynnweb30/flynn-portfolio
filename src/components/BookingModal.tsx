@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Phone, Tag, Calendar, Clock, Globe, Check, ArrowLeft, ArrowRight, Shield, Loader2 } from 'lucide-react';
+import { X, User, Mail, Phone, Tag, Calendar, Clock, Globe, Check, ArrowLeft, ArrowRight, Shield } from 'lucide-react';
 import { Button } from './Button';
-import { EMAILJS_CONFIG, trackEvent } from '../analytics';
 
 const API_URL = 'https://flynn-portfolio-1-api.onrender.com/api/create-booking';
 
@@ -24,19 +23,14 @@ const TIMEZONES = [
 interface BookingModalProps {
   open: boolean;
   onClose: () => void;
-  inline?: boolean;
-  initialService?: string;
 }
 
-export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inline = false, initialService }) => {
+export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
-  const [emailVerificationStatus, setEmailVerificationStatus] = useState<'idle' | 'checking' | 'verified' | 'invalid' | 'unreachable'>('idle');
-  const [verificationError, setVerificationError] = useState('');
-  const [verificationAnimating, setVerificationAnimating] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [subject, setSubject] = useState(initialService || '');
+  const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [timezone, setTimezone] = useState('Asia/Manila');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -51,7 +45,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
   }, [open]);
 
   useEffect(() => {
-    if (inline) return;
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
@@ -90,68 +83,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
     return out;
   })();
 
-  /**
-   * Validate the email inline before allowing the visitor to continue.
-   * The browser can reliably validate syntax and DNS/MX availability, but it
-   * cannot truthfully observe a later SMTP bounce. The UI therefore reports
-   * "Verified" only after a successful syntax + MX deliverability check.
-   */
-  const verifyEmailInline = async () => {
-    const normalizedEmail = email.trim().toLowerCase();
-    const match = normalizedEmail.match(/^[^\s@]+@([^\s@]+\.[^\s@]+)$/);
-    if (!match) {
-      setEmailVerificationStatus('invalid');
-      setVerificationError('Enter a valid email address before continuing.');
-      trackEvent('email_verification_failed', { reason: 'invalid_format' });
-      return false;
-    }
-
-    const domain = match[1];
-    setEmailVerificationStatus('checking');
-    setVerificationError('');
-    setVerificationAnimating(true);
-
-    try {
-      const response = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=MX`, {
-        headers: { Accept: 'application/dns-json' },
-      });
-      if (!response.ok) throw new Error(`DNS validation failed (${response.status})`);
-      const dns = await response.json() as { Answer?: Array<{ type?: number; data?: string }> };
-      const hasMx = Array.isArray(dns.Answer) && dns.Answer.some((answer) => answer.type === 15 && Boolean(answer.data));
-
-      if (!hasMx) {
-        setEmailVerificationStatus('unreachable');
-        setVerificationError('This email domain cannot receive mail. Please check the address and try again.');
-        trackEvent('email_verification_failed', { reason: 'no_mx' });
-        return false;
-      }
-
-      // Small animation gives the validator time to communicate progress.
-      await new Promise((resolve) => window.setTimeout(resolve, 450));
-      setEmailVerificationStatus('verified');
-      trackEvent('email_verified', { method: 'syntax_mx' });
-      // Keep the Verified label visible briefly before advancing to the next step.
-      await new Promise((resolve) => window.setTimeout(resolve, 500));
-      return true;
-    } catch (error) {
-      console.error('Inline email verification error:', error);
-      setEmailVerificationStatus('unreachable');
-      setVerificationError('We could not verify this email right now. Please try again.');
-      trackEvent('email_verification_error');
-      return false;
-    } finally {
-      setVerificationAnimating(false);
-    }
-  };
-
-  const handleDetailsNext = async () => {
-    if (!name.trim()) return;
-    const verified = emailVerificationStatus === 'verified' ? true : await verifyEmailInline();
-    if (verified) setStep(3);
-  };
-
   const handleSubmit = async () => {
-    if (!selectedDate || !selectedTime || emailVerificationStatus !== 'verified') return;
+    if (!selectedDate || !selectedTime) return;
     setIsProcessing(true);
     try {
       const res = await fetch(API_URL, {
@@ -175,8 +108,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
 
   const reset = () => {
     setStep(1); setName(''); setEmail(''); setPhone('');
-    setEmailVerificationStatus('idle'); setVerificationError(''); setVerificationAnimating(false);
-    setSubject(initialService || ''); setMessage(''); setSelectedDate(null);
+    setSubject(''); setMessage(''); setSelectedDate(null);
     setSelectedTime(null); setSuccessData(null);
   };
 
@@ -187,8 +119,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className={inline ? 'w-full' : 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm'}
-          onClick={inline ? undefined : onClose}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={onClose}
         >
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -196,15 +128,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className={inline ? 'relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl shadow-[var(--shadow-xl)] w-full overflow-hidden' : 'relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl shadow-[var(--shadow-xl)] max-w-lg w-full max-h-[90vh] overflow-y-auto'}
+            className="relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl shadow-[var(--shadow-xl)] max-w-lg w-full max-h-[90vh] overflow-y-auto"
           >
-            {!inline && <button
+            <button
               onClick={onClose}
               className="absolute top-4 right-4 p-2 text-[var(--ink-tertiary)] hover:text-[var(--ink-primary)] rounded-md transition-colors z-10"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
-            </button>}
+            </button>
 
             <div className="p-7 sm:p-9">
               {/* Progress dots */}
@@ -226,13 +158,72 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
               {step === 1 && (
                 <div className="space-y-5">
                   <div>
-                    <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">What brings you here?</h3>
-                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">Tell me what you need so I can prepare for the call.</p>
+                    <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">Let's get to know you</h3>
+                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">A few details so I can prepare for our call.</p>
                   </div>
 
                   <div>
                     <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <Tag className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> What brings you here? *
+                      <User className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      placeholder="Jane Smith"
+                      className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
+                      <Mail className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Email *
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="jane@company.com"
+                      className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
+                      <Phone className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Phone (optional)
+                    </label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={e => setPhone(e.target.value)}
+                      placeholder="+1 555 000 0000"
+                      className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!name.trim() || !email.includes('@')) return;
+                      setStep(2);
+                    }}
+                    disabled={!name.trim() || !email.includes('@')}
+                    className="w-full py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
+                  >
+                    Next <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="space-y-5">
+                  <div>
+                    <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">What brings you here?</h3>
+                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">Tell me what you need so I can prepare.</p>
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
+                      <Tag className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Subject *
                     </label>
                     <select
                       value={subject}
@@ -241,8 +232,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
                     >
                       <option value="">Select an option...</option>
                       <option>Hiring Opportunity — I need an SDR</option>
-                      <option>B2B Appointment Setting — I need qualified meetings</option>
-                      <option>Cold Calling — I need outbound prospecting</option>
                       <option>Sales Consulting — I need strategy help</option>
                       <option>Team Training / Mentorship</option>
                       <option>Partnership opportunity</option>
@@ -252,94 +241,31 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
 
                   <div>
                     <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      What is the main outcome you want?
+                      What's your biggest challenge right now?
                     </label>
                     <textarea
                       value={message}
                       onChange={e => setMessage(e.target.value)}
                       rows={4}
-                      placeholder="Tell me about your goal, ICP, current outbound bottleneck, or hiring need..."
+                      placeholder="Tell me about your goals or current outbound bottleneck..."
                       className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors resize-none"
                     />
                   </div>
 
-                  <button
-                    onClick={() => subject && setStep(2)}
-                    disabled={!subject}
-                    className="w-full py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
-                  >
-                    Continue <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-5">
-                  <div>
-                    <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">Let's get to know you</h3>
-                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">A few details so I can prepare for our call.</p>
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <User className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Name *
-                    </label>
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jane Smith" className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors" />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <Mail className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Work email *
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => {
-                        setEmail(e.target.value);
-                        setEmailVerificationStatus('idle');
-                        setVerificationError('');
-                      }}
-                      placeholder="jane@company.com"
-                      autoComplete="email"
-                      aria-describedby="email-verification-status"
-                      className={`w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors ${emailVerificationStatus === 'verified' ? 'border-emerald-400/50' : emailVerificationStatus === 'invalid' || emailVerificationStatus === 'unreachable' ? 'border-red-400/50' : 'border-[var(--border-default)]'}`}
-                    />
-                    <div id="email-verification-status" aria-live="polite" className="min-h-[20px] mt-2">
-                      {verificationAnimating && (
-                        <motion.div
-                          initial={{ opacity: 0, x: -4 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="flex items-center gap-1.5 text-[11px] text-[var(--ink-tertiary)]"
-                        >
-                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--accent-primary)]" /> Checking email…
-                        </motion.div>
-                      )}
-                      {!verificationAnimating && emailVerificationStatus === 'verified' && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -3, scale: 0.98 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          transition={{ duration: 0.22 }}
-                          className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-300"
-                        >
-                          <Check className="w-3.5 h-3.5" /> Verified
-                        </motion.div>
-                      )}
-                      {!verificationAnimating && (emailVerificationStatus === 'invalid' || emailVerificationStatus === 'unreachable') && (
-                        <p className="text-[11px] text-red-300 leading-5">{verificationError}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <Phone className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Phone (optional)
-                    </label>
-                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 555 000 0000" className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors" />
-                  </div>
-
                   <div className="flex gap-3">
-                    <button onClick={() => setStep(1)} className="px-4 py-3 text-[13px] font-medium text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors inline-flex items-center gap-1.5"><ArrowLeft className="w-4 h-4" /> Back</button>
-                    <button onClick={handleDetailsNext} disabled={!name.trim() || !email.trim() || emailVerificationStatus === 'checking'} className="flex-1 py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2">{emailVerificationStatus === 'checking' ? 'Checking…' : 'Next'} <ArrowRight className="w-4 h-4" /></button>
+                    <button
+                      onClick={() => setStep(1)}
+                      className="px-4 py-3 text-[13px] font-medium text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors inline-flex items-center gap-1.5"
+                    >
+                      <ArrowLeft className="w-4 h-4" /> Back
+                    </button>
+                    <button
+                      onClick={() => subject && setStep(3)}
+                      disabled={!subject}
+                      className="flex-1 py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
+                    >
+                      Next <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               )}

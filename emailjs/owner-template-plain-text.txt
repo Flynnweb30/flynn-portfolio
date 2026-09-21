@@ -1,0 +1,17 @@
+NEW FLYNN JAMES PORTFOLIO INQUIRY
+
+Name: {{name}}
+Email: {{email}}
+Company: {{company}}
+Phone / WhatsApp: {{phone}}
+Service Needed: {{service_needed}}
+Target Market: {{target_market}}
+Monthly Meeting Target: {{meeting_target}}
+
+ICP & Current Bottleneck:
+{{message}}
+
+Submitted: {{submitted_at}}
+Source Page: {{page_url}}
+
+Reply directly to {{email}} to continue the conversation.

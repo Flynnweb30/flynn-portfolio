@@ -1,0 +1,15 @@
+Hi {{name}},
+
+Thanks for contacting Flynn James. I received your inquiry and will review the details and respond within 24 hours.
+
+Your inquiry:
+Company: {{company}}
+Service: {{service_needed}}
+Target Market: {{target_market}}
+Monthly Meeting Target: {{meeting_target}}
+
+If your project is time-sensitive, email me directly at va.flynnjames@gmail.com.
+
+Flynn James Q. Pontino
+Senior SDR & Junior Sales Team Lead
+https://flynnjamespontino-porfolio.onrender.com/contact

@@ -164,10 +164,21 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
   const formData = new FormData(form);
   const name = String(formData.get('name') || '').trim();
   const email = String(formData.get('email') || '').trim();
+  const company = String(formData.get('company') || '').trim();
+  const phone = String(formData.get('phone') || '').trim();
+  const serviceNeeded = String(formData.get('need') || '').trim();
+  const targetMarket = String(formData.get('targetMarket') || '').trim();
+  const meetingTarget = String(formData.get('meetingTarget') || '').trim();
   const message = String(formData.get('message') || '').trim();
 
-  if (!name || !email || !message) {
-    showToast('Please complete your name, work email, and message.', true);
+  if (!name || !email || !company || !serviceNeeded || !targetMarket || !message) {
+    showToast('Please complete all required fields before sending.', true);
+    return;
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    showToast('Please enter a valid work email address.', true);
     return;
   }
 
@@ -181,31 +192,45 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
   try {
     if (!window.emailjs) throw new Error('EmailJS is not loaded yet.');
 
-    const company = String(formData.get('company') || '').trim();
-    const phone = String(formData.get('phone') || '').trim();
-    const service = String(formData.get('need') || '').trim();
-    const market = String(formData.get('targetMarket') || '').trim();
-    const meetingTarget = String(formData.get('meetingTarget') || '').trim();
-    const need = [service, market, meetingTarget].filter(Boolean).join(' · ');
+    const submittedAt = new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: 'UTC',
+    }).format(new Date()) + ' UTC';
 
-    await window.emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, {
+    const templateParams = {
       name,
       email,
       company,
-      phone,
-      need,
+      phone: phone || 'Not provided',
+      need: serviceNeeded,
+      service_needed: serviceNeeded,
+      targetMarket,
+      target_market: targetMarket,
+      meetingTarget,
+      meeting_target: meetingTarget || 'Not specified',
       message,
       to_email: EMAILJS_CONFIG.TO_EMAIL,
       reply_to: email,
-    });
+      submitted_at: submittedAt,
+      page_url: window.location.href,
+      form_name: form.dataset.formName || 'contact',
+    };
 
-    trackEvent('contact_form_submit', { form_name: form.dataset.formName || 'inquiry' });
-    showToast('Message sent successfully. I’ll get back to you within 24 hours.');
+    await window.emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, templateParams);
+
+    trackEvent('contact_form_submit', {
+      form_name: templateParams.form_name,
+      service: serviceNeeded,
+      target_market: targetMarket,
+      meeting_target: meetingTarget || 'not_specified',
+    });
+    showToast('Message sent successfully. A confirmation has been sent to your email.');
     form.reset();
     window.dispatchEvent(new CustomEvent('flynn:inquiry-success', { detail: { name, email } }));
   } catch (error) {
     console.error('EmailJS inquiry error:', error);
-    trackEvent('contact_form_error', { form_name: form.dataset.formName || 'inquiry' });
+    trackEvent('contact_form_error', { form_name: form.dataset.formName || 'contact' });
     showToast('I couldn’t send that message. Please email me directly instead.', true);
   } finally {
     if (button) {
