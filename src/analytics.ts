@@ -15,6 +15,7 @@ export const EMAILJS_CONFIG = {
   PUBLIC_KEY: 'crekfvN6H352DXAfx',
   SERVICE_ID: 'service_av4pfmh',
   TEMPLATE_ID: 'template_dhede6o',
+  VERIFICATION_TEMPLATE_ID: 'template_contact_verify',
   TO_EMAIL: 'va.flynnjames@gmail.com',
 };
 
@@ -162,17 +163,19 @@ export function showToast(msg: string, isError = false): void {
  */
 async function sendInquiry(form: HTMLFormElement): Promise<void> {
   const formData = new FormData(form);
-  const name = String(formData.get('name') || '').trim();
-  const email = String(formData.get('email') || '').trim();
-  const company = String(formData.get('company') || '').trim();
-  const phone = String(formData.get('phone') || '').trim();
-  const serviceNeeded = String(formData.get('need') || '').trim();
-  const targetMarket = String(formData.get('targetMarket') || '').trim();
-  const meetingTarget = String(formData.get('meetingTarget') || '').trim();
-  const message = String(formData.get('message') || '').trim();
+  const get = (key: string) => String(formData.get(key) || '').trim();
+
+  const name = get('name');
+  const email = get('email');
+  const company = get('company');
+  const phone = get('phone');
+  const serviceNeeded = get('serviceNeeded') || get('need');
+  const targetMarket = get('targetMarket');
+  const meetingTarget = get('meetingTarget') || get('callingVolume');
+  const message = get('message');
 
   if (!name || !email || !company || !serviceNeeded || !targetMarket || !message) {
-    showToast('Please complete all required fields before sending.', true);
+    showToast('Please complete all required fields before sending your inquiry.', true);
     return;
   }
 
@@ -186,52 +189,69 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
   const originalButtonHTML = button?.innerHTML || '';
   if (button) {
     button.disabled = true;
-    button.innerHTML = 'Sending... ⏳';
+    button.innerHTML = 'Sending inquiry... ⏳';
   }
+
+  const submittedAt = new Date().toLocaleString('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZoneName: 'short',
+  });
+
+  const pageUrl = window.location.href;
+  const pagePath = window.location.pathname;
+  const source = document.title || 'Flynn James Portfolio';
+  const userAgent = navigator.userAgent.slice(0, 500);
 
   try {
     if (!window.emailjs) throw new Error('EmailJS is not loaded yet.');
-
-    const submittedAt = new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-      timeZone: 'UTC',
-    }).format(new Date()) + ' UTC';
 
     const templateParams = {
       name,
       email,
       company,
       phone: phone || 'Not provided',
+      serviceNeeded,
       need: serviceNeeded,
-      service_needed: serviceNeeded,
       targetMarket,
-      target_market: targetMarket,
-      meetingTarget,
-      meeting_target: meetingTarget || 'Not specified',
+      meetingTarget: meetingTarget || 'Not specified',
+      callingVolume: meetingTarget || 'Not specified',
       message,
       to_email: EMAILJS_CONFIG.TO_EMAIL,
       reply_to: email,
       submitted_at: submittedAt,
-      page_url: window.location.href,
-      form_name: form.dataset.formName || 'contact',
+      page_url: pageUrl,
+      page_path: pagePath,
+      source_page: source,
+      user_agent: userAgent,
     };
 
-    await window.emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, templateParams);
+    await window.emailjs.send(
+      EMAILJS_CONFIG.SERVICE_ID,
+      EMAILJS_CONFIG.TEMPLATE_ID,
+      templateParams,
+    );
 
     trackEvent('contact_form_submit', {
-      form_name: templateParams.form_name,
+      form_name: form.dataset.formName || 'portfolio_contact',
       service: serviceNeeded,
       target_market: targetMarket,
-      meeting_target: meetingTarget || 'not_specified',
     });
-    showToast('Message sent successfully. A confirmation has been sent to your email.');
+
+    showToast('Inquiry sent successfully. I’ll get back to you within 24 hours.');
     form.reset();
-    window.dispatchEvent(new CustomEvent('flynn:inquiry-success', { detail: { name, email } }));
+    window.dispatchEvent(new CustomEvent('flynn:inquiry-success', {
+      detail: { name, email, company, serviceNeeded },
+    }));
   } catch (error) {
     console.error('EmailJS inquiry error:', error);
-    trackEvent('contact_form_error', { form_name: form.dataset.formName || 'contact' });
-    showToast('I couldn’t send that message. Please email me directly instead.', true);
+    trackEvent('contact_form_error', {
+      form_name: form.dataset.formName || 'portfolio_contact',
+    });
+    showToast(
+      'I couldn’t send your inquiry. Please email va.flynnjames@gmail.com directly.',
+      true,
+    );
   } finally {
     if (button) {
       button.disabled = false;

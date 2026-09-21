@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Mail, Phone, Tag, Calendar, Clock, Globe, Check, ArrowLeft, ArrowRight, Shield } from 'lucide-react';
 import { Button } from './Button';
+import { EMAILJS_CONFIG, trackEvent } from '../analytics';
 
 const API_URL = 'https://flynn-portfolio-1-api.onrender.com/api/create-booking';
 
@@ -23,14 +24,20 @@ const TIMEZONES = [
 interface BookingModalProps {
   open: boolean;
   onClose: () => void;
+  inline?: boolean;
+  initialService?: string;
 }
 
-export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => {
+export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inline = false, initialService }) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
+  const [emailVerificationCode, setEmailVerificationCode] = useState('');
+  const [emailVerificationStatus, setEmailVerificationStatus] = useState<'idle' | 'checking' | 'code-sent' | 'verified' | 'invalid' | 'unreachable'>('idle');
+  const [generatedVerificationCode, setGeneratedVerificationCode] = useState('');
+  const [verificationError, setVerificationError] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [subject, setSubject] = useState('');
+  const [subject, setSubject] = useState(initialService || '');
   const [message, setMessage] = useState('');
   const [timezone, setTimezone] = useState('Asia/Manila');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -45,6 +52,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
   }, [open]);
 
   useEffect(() => {
+    if (inline) return;
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
@@ -83,8 +91,82 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
     return out;
   })();
 
+  /**
+   * Verify that the email domain advertises an MX record before sending a
+   * one-time verification code. MX validation is a domain-level check; the
+   * OTP confirmation is what verifies control of the inbox.
+   */
+  const verifyEmail = async () => {
+    const normalizedEmail = email.trim().toLowerCase();
+    const match = normalizedEmail.match(/^[^\s@]+@([^\s@]+\.[^\s@]+)$/);
+    if (!match) {
+      setEmailVerificationStatus('invalid');
+      setVerificationError('Enter a valid email address first.');
+      return;
+    }
+
+    const domain = match[1];
+    setEmailVerificationStatus('checking');
+    setVerificationError('');
+
+    try {
+      const response = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=MX`, {
+        headers: { Accept: 'application/dns-json' },
+      });
+      const dns = await response.json() as { Answer?: Array<{ type?: number; data?: string }> };
+      const hasMx = Array.isArray(dns.Answer) && dns.Answer.some((answer) => answer.type === 15 && Boolean(answer.data));
+
+      if (!hasMx) {
+        setEmailVerificationStatus('unreachable');
+        setVerificationError('This email domain does not advertise a mail server. Please check the address.');
+        trackEvent('email_verification_failed', { reason: 'no_mx' });
+        return;
+      }
+
+      if (!window.emailjs) {
+        setEmailVerificationStatus('unreachable');
+        setVerificationError('Email verification is temporarily unavailable. Please try again in a moment.');
+        return;
+      }
+
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      setGeneratedVerificationCode(code);
+      await window.emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.VERIFICATION_TEMPLATE_ID, {
+        name: name.trim() || 'Portfolio visitor',
+        email: normalizedEmail,
+        company: '',
+        phone: '',
+        need: 'Email verification code',
+        message: `Your Flynn James verification code is ${code}. It expires in 10 minutes.`,
+        verification_code: code,
+        to_email: normalizedEmail,
+        reply_to: normalizedEmail,
+      });
+
+      setEmailVerificationStatus('code-sent');
+      trackEvent('email_verification_code_sent');
+    } catch (error) {
+      console.error('Email verification delivery error:', error);
+      setEmailVerificationStatus('unreachable');
+      setVerificationError('The verification email could not be sent. Please check the address and try again.');
+      trackEvent('email_verification_delivery_error');
+    }
+  };
+
+  const confirmEmailCode = () => {
+    if (emailVerificationCode.trim() !== generatedVerificationCode) {
+      setEmailVerificationStatus('invalid');
+      setVerificationError('That code does not match. Check the email and try again.');
+      trackEvent('email_verification_failed', { reason: 'invalid_code' });
+      return;
+    }
+    setEmailVerificationStatus('verified');
+    setVerificationError('');
+    trackEvent('email_verified');
+  };
+
   const handleSubmit = async () => {
-    if (!selectedDate || !selectedTime) return;
+    if (!selectedDate || !selectedTime || emailVerificationStatus !== 'verified') return;
     setIsProcessing(true);
     try {
       const res = await fetch(API_URL, {
@@ -108,7 +190,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
 
   const reset = () => {
     setStep(1); setName(''); setEmail(''); setPhone('');
-    setSubject(''); setMessage(''); setSelectedDate(null);
+    setEmailVerificationCode(''); setEmailVerificationStatus('idle'); setGeneratedVerificationCode(''); setVerificationError('');
+    setSubject(initialService || ''); setMessage(''); setSelectedDate(null);
     setSelectedTime(null); setSuccessData(null);
   };
 
@@ -119,8 +202,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={onClose}
+          className={inline ? 'w-full' : 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm'}
+          onClick={inline ? undefined : onClose}
         >
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -128,15 +211,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl shadow-[var(--shadow-xl)] max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className={inline ? 'relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl shadow-[var(--shadow-xl)] w-full overflow-hidden' : 'relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl shadow-[var(--shadow-xl)] max-w-lg w-full max-h-[90vh] overflow-y-auto'}
           >
-            <button
+            {!inline && <button
               onClick={onClose}
               className="absolute top-4 right-4 p-2 text-[var(--ink-tertiary)] hover:text-[var(--ink-primary)] rounded-md transition-colors z-10"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
-            </button>
+            </button>}
 
             <div className="p-7 sm:p-9">
               {/* Progress dots */}
@@ -158,72 +241,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
               {step === 1 && (
                 <div className="space-y-5">
                   <div>
-                    <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">Let's get to know you</h3>
-                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">A few details so I can prepare for our call.</p>
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <User className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={e => setName(e.target.value)}
-                      placeholder="Jane Smith"
-                      className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <Mail className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Email *
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      placeholder="jane@company.com"
-                      className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <Phone className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Phone (optional)
-                    </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={e => setPhone(e.target.value)}
-                      placeholder="+1 555 000 0000"
-                      className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
-                    />
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      if (!name.trim() || !email.includes('@')) return;
-                      setStep(2);
-                    }}
-                    disabled={!name.trim() || !email.includes('@')}
-                    className="w-full py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
-                  >
-                    Next <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-5">
-                  <div>
                     <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">What brings you here?</h3>
-                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">Tell me what you need so I can prepare.</p>
+                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">Tell me what you need so I can prepare for the call.</p>
                   </div>
 
                   <div>
                     <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      <Tag className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Subject *
+                      <Tag className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> What brings you here? *
                     </label>
                     <select
                       value={subject}
@@ -232,6 +256,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
                     >
                       <option value="">Select an option...</option>
                       <option>Hiring Opportunity — I need an SDR</option>
+                      <option>B2B Appointment Setting — I need qualified meetings</option>
+                      <option>Cold Calling — I need outbound prospecting</option>
                       <option>Sales Consulting — I need strategy help</option>
                       <option>Team Training / Mentorship</option>
                       <option>Partnership opportunity</option>
@@ -241,31 +267,91 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => 
 
                   <div>
                     <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
-                      What's your biggest challenge right now?
+                      What is the main outcome you want?
                     </label>
                     <textarea
                       value={message}
                       onChange={e => setMessage(e.target.value)}
                       rows={4}
-                      placeholder="Tell me about your goals or current outbound bottleneck..."
+                      placeholder="Tell me about your goal, ICP, current outbound bottleneck, or hiring need..."
                       className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors resize-none"
                     />
                   </div>
 
+                  <button
+                    onClick={() => subject && setStep(2)}
+                    disabled={!subject}
+                    className="w-full py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
+                  >
+                    Continue <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="space-y-5">
+                  <div>
+                    <h3 className="text-[20px] font-semibold text-[var(--ink-primary)]">Let's get to know you</h3>
+                    <p className="text-[13px] text-[var(--ink-tertiary)] mt-1.5">A few details so I can prepare for our call.</p>
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
+                      <User className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Name *
+                    </label>
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jane Smith" className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors" />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
+                      <Mail className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Work email *
+                    </label>
+                    <input type="email" value={email} onChange={e => { setEmail(e.target.value); setEmailVerificationStatus('idle'); setVerificationError(''); }} placeholder="jane@company.com" className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors" />
+                    <p className="mt-2 text-[11px] text-[var(--ink-quaternary)]">We verify the domain and send a one-time code to confirm inbox access.</p>
+                  </div>
+
+                  {emailVerificationStatus !== 'verified' && (
+                    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-base)] p-4 space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--ink-tertiary)]">Email verification</span>
+                        <span className={`text-[11px] font-medium ${emailVerificationStatus === 'code-sent' ? 'text-amber-300' : emailVerificationStatus === 'invalid' || emailVerificationStatus === 'unreachable' ? 'text-red-300' : 'text-[var(--ink-tertiary)]'}`}>
+                          {emailVerificationStatus === 'checking' ? 'Checking domain…' : emailVerificationStatus === 'code-sent' ? 'Code sent' : emailVerificationStatus === 'invalid' ? 'Code mismatch' : emailVerificationStatus === 'unreachable' ? 'Delivery unavailable' : 'Not verified'}
+                        </span>
+                      </div>
+
+                      {emailVerificationStatus !== 'code-sent' && (
+                        <button onClick={verifyEmail} disabled={!email.trim() || emailVerificationStatus === 'checking'} className="w-full py-2.5 text-[13px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed">
+                          {emailVerificationStatus === 'checking' ? 'Checking email…' : 'Send verification code'}
+                        </button>
+                      )}
+
+                      {emailVerificationStatus === 'code-sent' && (
+                        <div className="flex gap-2">
+                          <input value={emailVerificationCode} onChange={e => setEmailVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))} inputMode="numeric" maxLength={6} placeholder="6-digit code" className="flex-1 px-3 py-2.5 text-[14px] tracking-[0.3em] bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] focus:outline-none focus:border-[var(--accent-primary)]" />
+                          <button onClick={confirmEmailCode} disabled={emailVerificationCode.length !== 6} className="px-4 py-2.5 text-[13px] font-semibold text-white bg-[var(--accent-primary)] rounded-lg disabled:opacity-40">Verify</button>
+                        </div>
+                      )}
+
+                      {verificationError && <p className="text-[11.5px] text-red-300 leading-5">{verificationError}</p>}
+                    </div>
+                  )}
+
+                  {emailVerificationStatus === 'verified' && (
+                    <div className="flex items-center gap-2 rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-3 py-2.5 text-[12px] text-emerald-300">
+                      <Check className="w-4 h-4" /> Email verified — this inbox has been confirmed.
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
+                      <Phone className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Phone (optional)
+                    </label>
+                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 555 000 0000" className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors" />
+                  </div>
+
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => setStep(1)}
-                      className="px-4 py-3 text-[13px] font-medium text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors inline-flex items-center gap-1.5"
-                    >
-                      <ArrowLeft className="w-4 h-4" /> Back
-                    </button>
-                    <button
-                      onClick={() => subject && setStep(3)}
-                      disabled={!subject}
-                      className="flex-1 py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
-                    >
-                      Next <ArrowRight className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => setStep(1)} className="px-4 py-3 text-[13px] font-medium text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors inline-flex items-center gap-1.5"><ArrowLeft className="w-4 h-4" /> Back</button>
+                    <button onClick={() => emailVerificationStatus === 'verified' && name.trim() && setStep(3)} disabled={!name.trim() || emailVerificationStatus !== 'verified'} className="flex-1 py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2">Next <ArrowRight className="w-4 h-4" /></button>
                   </div>
                 </div>
               )}

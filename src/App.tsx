@@ -20,7 +20,6 @@ import { SamplesPage } from './pages/SamplesPage';
 import { BlogPage } from './pages/BlogPage';
 import { BlogPostPage } from './pages/BlogPostPage';
 import { ContactPage } from './pages/ContactPage';
-import { BookingModal } from './components/BookingModal';
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -66,7 +65,6 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [contactServicePreselect, setContactServicePreselect] = useState<string | undefined>(undefined);
-  const [bookingOpen, setBookingOpen] = useState(false);
 
   const pageFromLocation = useCallback((): { page: PageId; slug: string | null } => {
     const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
@@ -168,7 +166,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onOpenBooking={() => setBookingOpen(true)} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onOpenBooking={() => navigate('contact')} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
       case 'about':
         return <AboutPage onNavigate={navigate} onOpenContact={navigateToContact} />;
       case 'services':
@@ -186,13 +184,13 @@ export default function App() {
       case 'contact':
         return <ContactPage initialService={contactServicePreselect} onSuccessToast={setToastMessage} />;
       default:
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onOpenBooking={() => setBookingOpen(true)} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onOpenBooking={() => navigate('contact')} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
     }
   };
 
   return (
     <div className="min-h-screen text-slate-100 flex flex-col font-sans antialiased">
-      <Navbar currentPage={currentPage} onNavigate={navigate} onOpenContact={() => navigateToContact()} onOpenBooking={() => setBookingOpen(true)} />
+      <Navbar currentPage={currentPage} onNavigate={navigate} onOpenContact={() => navigateToContact()} onOpenBooking={() => navigate('contact')} />
       <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div key={`${currentPage}:${currentBlogSlug || ''}`} initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={pageTransition}>
@@ -200,14 +198,13 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
-      <Footer onNavigate={navigate} onOpenBooking={() => setBookingOpen(true)} />
+      <Footer onNavigate={navigate} onOpenBooking={() => navigate('contact')} />
 
       <CaseStudyModal caseStudy={selectedCaseStudy} onClose={() => setSelectedCaseStudy(null)} onOpenContact={() => { setSelectedCaseStudy(null); navigateToContact(); }} />
       <WorkSampleModal sample={selectedSample} onClose={() => setSelectedSample(null)} onOpenContact={() => { setSelectedSample(null); navigateToContact(); }} />
       <ServiceDetailModal service={selectedService} onClose={() => setSelectedService(null)} onOpenContact={(serviceName) => { setSelectedService(null); navigateToContact(serviceName); }} />
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       <div data-toast role="status" aria-live="polite" className="site-toast" />
-      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </div>
   );
 }

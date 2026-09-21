@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Mail, Phone, Linkedin, FileText, Send, CheckCircle2, 
   Copy, ExternalLink, Sparkles, Clock, Globe, ShieldCheck 
@@ -15,6 +15,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
     name: '',
     email: '',
     company: '',
+    phone: '',
     serviceNeeded: initialService || 'B2B Appointment Setting',
     targetMarket: 'United States',
     callingVolume: '150+ Dials/Day',
@@ -25,6 +26,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
   const [submitted, setSubmitted] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
+  useEffect(() => {
+    const handleInquirySuccess = () => {
+      setSubmitted(true);
+    };
+
+    window.addEventListener('flynn:inquiry-success', handleInquirySuccess);
+    return () => window.removeEventListener('flynn:inquiry-success', handleInquirySuccess);
+  }, [onSuccessToast]);
+
+
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(PERSONAL_INFO.email);
     setCopiedEmail(true);
@@ -34,14 +45,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate reliable form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      if (onSuccessToast) onSuccessToast("Thank you! Your inquiry was sent to Flynn James. Expect a response within 24 hours.");
-    }, 1000);
+    // EmailJS submission is handled centrally by src/analytics.ts.
+    // The global submit listener prevents the default browser submission.
   };
 
   return (
@@ -234,6 +239,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         name: '',
                         email: '',
                         company: '',
+                        phone: '',
                         serviceNeeded: 'B2B Appointment Setting',
                         targetMarket: 'United States',
                         callingVolume: '150+ Dials/Day',
@@ -246,7 +252,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4" id="portfolio-contact-form">
+                <form onSubmit={handleSubmit} className="space-y-4" id="portfolio-contact-form" data-inquiry-form data-form-name="portfolio_contact">
                   <div className="border-b border-slate-800 pb-4 mb-2">
                     <h3 className="text-xl font-bold text-white font-heading">
                       Request a Strategy Session or Campaign Proposal
@@ -266,6 +272,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         type="text"
                         required
                         placeholder="e.g. Sarah Jenkins"
+                        name="name"
+                        autoComplete="name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-colors"
@@ -280,6 +288,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         type="email"
                         required
                         placeholder="s.jenkins@company.com"
+                        name="email"
+                        autoComplete="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-colors"
@@ -297,6 +307,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         type="text"
                         required
                         placeholder="Acme Growth Inc."
+                        name="company"
+                        autoComplete="organization"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-colors"
@@ -308,6 +320,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         Primary Service Needed *
                       </label>
                       <select
+                        name="serviceNeeded"
                         value={formData.serviceNeeded}
                         onChange={(e) => setFormData({ ...formData, serviceNeeded: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-400 transition-colors"
@@ -322,6 +335,22 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                     </div>
                   </div>
 
+                  {/* Phone / WhatsApp */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                      Phone / WhatsApp <span className="text-slate-500 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      autoComplete="tel"
+                      placeholder="+1 555 123 4567"
+                      value={formData.phone || ''}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-colors"
+                    />
+                  </div>
+
                   {/* Target Market & Daily Dial expectation */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -329,6 +358,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         Target Geography / Timezone *
                       </label>
                       <select
+                        name="targetMarket"
                         value={formData.targetMarket}
                         onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-400 transition-colors"
@@ -347,6 +377,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                         Expected Monthly Meeting Target
                       </label>
                       <select
+                        name="meetingTarget"
                         value={formData.callingVolume}
                         onChange={(e) => setFormData({ ...formData, callingVolume: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-400 transition-colors"
@@ -368,6 +399,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
                       required
                       rows={4}
                       placeholder="e.g. We sell a $12k B2B SaaS platform to HR Directors in the US. Our closing reps don't have enough qualified meetings on their calendars and our SDR response rates are low..."
+                      name="message"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#070b14] border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-colors"
