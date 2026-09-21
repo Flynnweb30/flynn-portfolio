@@ -80,52 +80,37 @@ Use a URL-prefix Search Console property for `https://flynnjamespontino-porfolio
 
 The portfolio includes a crawlable `/blog` hub plus five evergreen B2B outbound articles covering cold calling, appointment setting KPIs, cadences, meeting show rates, and SDR hiring.
 
-## Contact Calendar + Email Verification
+## Contact Calendar + Inline Email Verification
 
-The `/contact` route is now the dedicated booking page. It is no longer opened as a dynamic booking popup from the main navigation. Existing CTA buttons route visitors to `/contact` while preserving the existing React/Vite architecture.
+The `/contact` route is the dedicated booking page. It is not a dynamic popup from the main navigation.
 
 ### Booking workflow
 
 1. **What brings you here?** — visitor selects the reason for contacting Flynn and can describe the desired outcome.
 2. **Let's get to know you** — visitor enters name, work email, and optional phone number.
-3. **Email verification** — the site checks the email domain for MX records and sends a six-digit verification code through EmailJS. The visitor must enter the code before continuing.
+3. **Inline email verification** — clicking **Next** runs a subtle validation animation, checks email syntax, then checks the domain's MX records. When the domain is mail-enabled, a small **Verified** label appears directly beneath the email field and the visitor advances to the next step.
 4. **Pick a time** — visitor selects timezone, weekday, and available time.
 5. **Confirm your booking** — the existing booking API creates the appointment.
 
-The verification flow distinguishes:
-- `verified`: the visitor successfully entered the one-time code sent to the inbox.
-- `Delivery unavailable`: the email domain has no MX record or EmailJS rejected the verification request.
-- `Code mismatch`: the entered verification code did not match.
-
-A browser-only application cannot truthfully detect a later SMTP bounce after an email provider has accepted a message. A true post-send `bounced` state requires a server-side email provider webhook. The current flow therefore never falsely labels an accepted message as delivered; it only marks an inbox as verified after the recipient proves access to it.
+The browser can reliably verify the address format and whether the domain advertises a receiving mail server. It cannot directly observe a later SMTP hard bounce after a provider accepts a message. A true `bounced` state requires a server-side email provider webhook or a dedicated email-verification service. The current UI therefore does not falsely claim that a mailbox is guaranteed to exist; **Verified** means the address passed syntax and MX validation.
 
 ### EmailJS setup
 
-The project already loads EmailJS from:
-`https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js`
+EmailJS remains centralized in `src/analytics.ts` and is used for the site's inquiry/email workflow. The inline booking validator does **not** send an OTP or expose a private API key.
 
-Current credentials are centralized in `src/analytics.ts` under `EMAILJS_CONFIG`.
+1. Open the EmailJS dashboard.
+2. Confirm public key `crekfvN6H352DXAfx` is active.
+3. Confirm service ID `service_av4pfmh` is connected to the intended sending mailbox.
+4. Confirm template ID `template_dhede6o` exists and accepts the current inquiry variables.
+5. Keep `{{reply_to}}` configured as the reply-to address.
+6. If your template uses a dynamic recipient, keep `{{to_email}}` configured appropriately.
+7. Test a normal inquiry submission from the site and confirm the message reaches `va.flynnjames@gmail.com`.
+8. Monitor the EmailJS provider logs for rejected or bounced messages. Client-side JavaScript cannot reliably detect a later SMTP bounce.
+9. Never place an EmailJS private key or provider secret in the browser. Only the public key belongs in the static frontend.
 
-1. Open your EmailJS dashboard.
-2. Confirm service ID `service_av4pfmh` is connected to the sending mailbox.
-3. Confirm public key `crekfvN6H352DXAfx` is active.
-4. Open template `template_dhede6o`.
-5. Set the template recipient / To Email field to `{{to_email}}` so the same template can send booking inquiries to Flynn and verification messages to the visitor.
-6. Keep `{{reply_to}}` as the reply-to field.
-7. Include these template variables where appropriate:
-   - `{{name}}`
-   - `{{email}}`
-   - `{{company}}`
-   - `{{phone}}`
-   - `{{need}}`
-   - `{{message}}`
-   - `{{verification_code}}`
-   - `{{to_email}}`
-   - `{{reply_to}}`
-8. For verification emails, `{{need}}` is `Email verification code` and `{{message}}` contains the six-digit code and its expiration notice.
-9. Send a test email from EmailJS to confirm that the message reaches the visitor's inbox.
-10. Send a normal contact submission to confirm that `to_email` routes the inquiry to `va.flynnjames@gmail.com`.
-11. Do not expose an EmailJS private key in this project. The browser only uses the public key.
+### Optional true bounce detection
+
+For authoritative `deliverable`, `undeliverable`, or `bounced` states, connect a server-side email verification provider or your mail provider's webhook to the existing booking API. Keep that secret-backed logic on the server; do not put private verification credentials in the Vite bundle.
 
 ### Production deployment
 

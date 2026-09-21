@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Phone, Tag, Calendar, Clock, Globe, Check, ArrowLeft, ArrowRight, Shield } from 'lucide-react';
+import { X, User, Mail, Phone, Tag, Calendar, Clock, Globe, Check, ArrowLeft, ArrowRight, Shield, Loader2 } from 'lucide-react';
 import { Button } from './Button';
 import { EMAILJS_CONFIG, trackEvent } from '../analytics';
 
@@ -31,10 +31,9 @@ interface BookingModalProps {
 export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inline = false, initialService }) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
-  const [emailVerificationCode, setEmailVerificationCode] = useState('');
-  const [emailVerificationStatus, setEmailVerificationStatus] = useState<'idle' | 'checking' | 'code-sent' | 'verified' | 'invalid' | 'unreachable'>('idle');
-  const [generatedVerificationCode, setGeneratedVerificationCode] = useState('');
+  const [emailVerificationStatus, setEmailVerificationStatus] = useState<'idle' | 'checking' | 'verified' | 'invalid' | 'unreachable'>('idle');
   const [verificationError, setVerificationError] = useState('');
+  const [verificationAnimating, setVerificationAnimating] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [subject, setSubject] = useState(initialService || '');
@@ -92,77 +91,63 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
   })();
 
   /**
-   * Verify that the email domain advertises an MX record before sending a
-   * one-time verification code. MX validation is a domain-level check; the
-   * OTP confirmation is what verifies control of the inbox.
+   * Validate the email inline before allowing the visitor to continue.
+   * The browser can reliably validate syntax and DNS/MX availability, but it
+   * cannot truthfully observe a later SMTP bounce. The UI therefore reports
+   * "Verified" only after a successful syntax + MX deliverability check.
    */
-  const verifyEmail = async () => {
+  const verifyEmailInline = async () => {
     const normalizedEmail = email.trim().toLowerCase();
     const match = normalizedEmail.match(/^[^\s@]+@([^\s@]+\.[^\s@]+)$/);
     if (!match) {
       setEmailVerificationStatus('invalid');
-      setVerificationError('Enter a valid email address first.');
-      return;
+      setVerificationError('Enter a valid email address before continuing.');
+      trackEvent('email_verification_failed', { reason: 'invalid_format' });
+      return false;
     }
 
     const domain = match[1];
     setEmailVerificationStatus('checking');
     setVerificationError('');
+    setVerificationAnimating(true);
 
     try {
       const response = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=MX`, {
         headers: { Accept: 'application/dns-json' },
       });
+      if (!response.ok) throw new Error(`DNS validation failed (${response.status})`);
       const dns = await response.json() as { Answer?: Array<{ type?: number; data?: string }> };
       const hasMx = Array.isArray(dns.Answer) && dns.Answer.some((answer) => answer.type === 15 && Boolean(answer.data));
 
       if (!hasMx) {
         setEmailVerificationStatus('unreachable');
-        setVerificationError('This email domain does not advertise a mail server. Please check the address.');
+        setVerificationError('This email domain cannot receive mail. Please check the address and try again.');
         trackEvent('email_verification_failed', { reason: 'no_mx' });
-        return;
+        return false;
       }
 
-      if (!window.emailjs) {
-        setEmailVerificationStatus('unreachable');
-        setVerificationError('Email verification is temporarily unavailable. Please try again in a moment.');
-        return;
-      }
-
-      const code = String(Math.floor(100000 + Math.random() * 900000));
-      setGeneratedVerificationCode(code);
-      await window.emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, {
-        name: name.trim() || 'Portfolio visitor',
-        email: normalizedEmail,
-        company: '',
-        phone: '',
-        need: 'Email verification code',
-        message: `Your Flynn James verification code is ${code}. It expires in 10 minutes.`,
-        verification_code: code,
-        to_email: normalizedEmail,
-        reply_to: normalizedEmail,
-      });
-
-      setEmailVerificationStatus('code-sent');
-      trackEvent('email_verification_code_sent');
+      // Small animation gives the validator time to communicate progress.
+      await new Promise((resolve) => window.setTimeout(resolve, 450));
+      setEmailVerificationStatus('verified');
+      trackEvent('email_verified', { method: 'syntax_mx' });
+      // Keep the Verified label visible briefly before advancing to the next step.
+      await new Promise((resolve) => window.setTimeout(resolve, 500));
+      return true;
     } catch (error) {
-      console.error('Email verification delivery error:', error);
+      console.error('Inline email verification error:', error);
       setEmailVerificationStatus('unreachable');
-      setVerificationError('The verification email could not be sent. Please check the address and try again.');
-      trackEvent('email_verification_delivery_error');
+      setVerificationError('We could not verify this email right now. Please try again.');
+      trackEvent('email_verification_error');
+      return false;
+    } finally {
+      setVerificationAnimating(false);
     }
   };
 
-  const confirmEmailCode = () => {
-    if (emailVerificationCode.trim() !== generatedVerificationCode) {
-      setEmailVerificationStatus('invalid');
-      setVerificationError('That code does not match. Check the email and try again.');
-      trackEvent('email_verification_failed', { reason: 'invalid_code' });
-      return;
-    }
-    setEmailVerificationStatus('verified');
-    setVerificationError('');
-    trackEvent('email_verified');
+  const handleDetailsNext = async () => {
+    if (!name.trim()) return;
+    const verified = emailVerificationStatus === 'verified' ? true : await verifyEmailInline();
+    if (verified) setStep(3);
   };
 
   const handleSubmit = async () => {
@@ -190,7 +175,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
 
   const reset = () => {
     setStep(1); setName(''); setEmail(''); setPhone('');
-    setEmailVerificationCode(''); setEmailVerificationStatus('idle'); setGeneratedVerificationCode(''); setVerificationError('');
+    setEmailVerificationStatus('idle'); setVerificationError(''); setVerificationAnimating(false);
     setSubject(initialService || ''); setMessage(''); setSelectedDate(null);
     setSelectedTime(null); setSuccessData(null);
   };
@@ -306,41 +291,44 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
                     <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
                       <Mail className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Work email *
                     </label>
-                    <input type="email" value={email} onChange={e => { setEmail(e.target.value); setEmailVerificationStatus('idle'); setVerificationError(''); }} placeholder="jane@company.com" className="w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors" />
-                    <p className="mt-2 text-[11px] text-[var(--ink-quaternary)]">We verify the domain and send a one-time code to confirm inbox access.</p>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => {
+                        setEmail(e.target.value);
+                        setEmailVerificationStatus('idle');
+                        setVerificationError('');
+                      }}
+                      placeholder="jane@company.com"
+                      autoComplete="email"
+                      aria-describedby="email-verification-status"
+                      className={`w-full px-3.5 py-2.5 text-[14px] bg-[var(--bg-base)] border rounded-lg text-[var(--ink-primary)] placeholder-[var(--ink-quaternary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors ${emailVerificationStatus === 'verified' ? 'border-emerald-400/50' : emailVerificationStatus === 'invalid' || emailVerificationStatus === 'unreachable' ? 'border-red-400/50' : 'border-[var(--border-default)]'}`}
+                    />
+                    <div id="email-verification-status" aria-live="polite" className="min-h-[20px] mt-2">
+                      {verificationAnimating && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -4 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="flex items-center gap-1.5 text-[11px] text-[var(--ink-tertiary)]"
+                        >
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--accent-primary)]" /> Checking email…
+                        </motion.div>
+                      )}
+                      {!verificationAnimating && emailVerificationStatus === 'verified' && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -3, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ duration: 0.22 }}
+                          className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-300"
+                        >
+                          <Check className="w-3.5 h-3.5" /> Verified
+                        </motion.div>
+                      )}
+                      {!verificationAnimating && (emailVerificationStatus === 'invalid' || emailVerificationStatus === 'unreachable') && (
+                        <p className="text-[11px] text-red-300 leading-5">{verificationError}</p>
+                      )}
+                    </div>
                   </div>
-
-                  {emailVerificationStatus !== 'verified' && (
-                    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-base)] p-4 space-y-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--ink-tertiary)]">Email verification</span>
-                        <span className={`text-[11px] font-medium ${emailVerificationStatus === 'code-sent' ? 'text-amber-300' : emailVerificationStatus === 'invalid' || emailVerificationStatus === 'unreachable' ? 'text-red-300' : 'text-[var(--ink-tertiary)]'}`}>
-                          {emailVerificationStatus === 'checking' ? 'Checking domain…' : emailVerificationStatus === 'code-sent' ? 'Code sent' : emailVerificationStatus === 'invalid' ? 'Code mismatch' : emailVerificationStatus === 'unreachable' ? 'Delivery unavailable' : 'Not verified'}
-                        </span>
-                      </div>
-
-                      {emailVerificationStatus !== 'code-sent' && (
-                        <button onClick={verifyEmail} disabled={!email.trim() || emailVerificationStatus === 'checking'} className="w-full py-2.5 text-[13px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed">
-                          {emailVerificationStatus === 'checking' ? 'Checking email…' : 'Send verification code'}
-                        </button>
-                      )}
-
-                      {emailVerificationStatus === 'code-sent' && (
-                        <div className="flex gap-2">
-                          <input value={emailVerificationCode} onChange={e => setEmailVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))} inputMode="numeric" maxLength={6} placeholder="6-digit code" className="flex-1 px-3 py-2.5 text-[14px] tracking-[0.3em] bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-lg text-[var(--ink-primary)] focus:outline-none focus:border-[var(--accent-primary)]" />
-                          <button onClick={confirmEmailCode} disabled={emailVerificationCode.length !== 6} className="px-4 py-2.5 text-[13px] font-semibold text-white bg-[var(--accent-primary)] rounded-lg disabled:opacity-40">Verify</button>
-                        </div>
-                      )}
-
-                      {verificationError && <p className="text-[11.5px] text-red-300 leading-5">{verificationError}</p>}
-                    </div>
-                  )}
-
-                  {emailVerificationStatus === 'verified' && (
-                    <div className="flex items-center gap-2 rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-3 py-2.5 text-[12px] text-emerald-300">
-                      <Check className="w-4 h-4" /> Email verified — this inbox has been confirmed.
-                    </div>
-                  )}
 
                   <div>
                     <label className="flex items-center gap-2 text-[11px] font-mono text-[var(--ink-tertiary)] uppercase tracking-wider mb-2">
@@ -351,7 +339,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, inlin
 
                   <div className="flex gap-3">
                     <button onClick={() => setStep(1)} className="px-4 py-3 text-[13px] font-medium text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors inline-flex items-center gap-1.5"><ArrowLeft className="w-4 h-4" /> Back</button>
-                    <button onClick={() => emailVerificationStatus === 'verified' && name.trim() && setStep(3)} disabled={!name.trim() || emailVerificationStatus !== 'verified'} className="flex-1 py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2">Next <ArrowRight className="w-4 h-4" /></button>
+                    <button onClick={handleDetailsNext} disabled={!name.trim() || !email.trim() || emailVerificationStatus === 'checking'} className="flex-1 py-3 text-[14px] font-medium text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors disabled:opacity-40 flex items-center justify-center gap-2">{emailVerificationStatus === 'checking' ? 'Checking…' : 'Next'} <ArrowRight className="w-4 h-4" /></button>
                   </div>
                 </div>
               )}
