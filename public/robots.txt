@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /*?utm_
+Disallow: /*?ref=
+Disallow: /*?session=
+
+Sitemap: https://flynnjamespontino-porfolio.onrender.com/sitemap.xml
