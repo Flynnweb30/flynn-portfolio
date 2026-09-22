@@ -13,13 +13,13 @@ export const ExperienceTimeline: React.FC = () => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
-            <Briefcase className="w-3.5 h-3.5 text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
+            <Briefcase className="w-3.5 h-3.5 text-cyan-400" />
             <span>VERIFIED TRACK RECORD</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             11+ Years of Quota-Attainment &{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               Outbound Mastery
             </span>
           </h2>
@@ -45,14 +45,14 @@ export const ExperienceTimeline: React.FC = () => {
                   onClick={() => setSelectedExperience(exp.id)}
                   className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between group ${
                     isSelected
-                      ? 'bg-[#0f172a] border-blue-500/80 shadow-lg shadow-blue-950/30'
+                      ? 'bg-[#0f172a] border-cyan-500/80 shadow-lg shadow-cyan-950/30'
                       : 'bg-[#070b14]/70 border-slate-800 hover:border-slate-700 hover:bg-[#0f172a]/50'
                   }`}
                   id={`exp-tab-${exp.id}`}
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className={`text-xs font-bold ${isSelected ? 'text-blue-400' : 'text-slate-400'}`}>
+                      <span className={`text-xs font-bold ${isSelected ? 'text-cyan-400' : 'text-slate-400'}`}>
                         {exp.period}
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
@@ -60,7 +60,7 @@ export const ExperienceTimeline: React.FC = () => {
                       </span>
                     </div>
 
-                    <h4 className="text-sm font-bold text-white font-heading group-hover:text-blue-300 transition-colors">
+                    <h4 className="text-sm font-bold text-white font-heading group-hover:text-cyan-300 transition-colors">
                       {exp.role}
                     </h4>
 
@@ -75,7 +75,7 @@ export const ExperienceTimeline: React.FC = () => {
                     <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
                       {exp.highlightMetric}
                     </span>
-                    <ChevronRight className={`w-4 h-4 transition-transform ${isSelected ? 'text-blue-400 translate-x-1' : 'text-slate-600'}`} />
+                    <ChevronRight className={`w-4 h-4 transition-transform ${isSelected ? 'text-cyan-400 translate-x-1' : 'text-slate-600'}`} />
                   </div>
                 </button>
               );
@@ -89,7 +89,7 @@ export const ExperienceTimeline: React.FC = () => {
               {/* Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
                 <div>
-                  <div className="flex items-center gap-2 text-xs text-blue-300 font-semibold mb-1">
+                  <div className="flex items-center gap-2 text-xs text-cyan-300 font-semibold mb-1">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{activeExp.period}</span>
                     <span>·</span>
@@ -120,13 +120,13 @@ export const ExperienceTimeline: React.FC = () => {
               {/* Responsibilities Block */}
               <div className="py-6 border-b border-slate-800 space-y-3">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5 text-blue-400" />
+                  <Briefcase className="w-3.5 h-3.5 text-cyan-400" />
                   <span>Key Responsibilities & Focus Areas</span>
                 </h4>
                 <ul className="space-y-2.5">
                   {activeExp.responsibilities.map((resp, i) => (
                     <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-slate-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0 mt-2"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 mt-2"></span>
                       <span>{resp}</span>
                     </li>
                   ))}

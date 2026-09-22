@@ -32,13 +32,13 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
-            <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
+            <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
             <span>PORTFOLIO & TACTICAL WORK SAMPLES</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Battle-Tested Sales Playbooks &{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               Deliverable Samples
             </span>
           </h2>
@@ -57,7 +57,7 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
               <div
                 key={sample.id}
                 onClick={() => onSelectSample(sample)}
-                className="bg-[#0f172a] rounded-2xl border border-slate-800 hover:border-blue-500/50 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-blue-950/20 cursor-pointer group"
+                className="bg-[#0f172a] rounded-2xl border border-slate-800 hover:border-cyan-500/50 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 cursor-pointer group"
                 id={`work-sample-${sample.id}`}
               >
                 {/* Visual Header */}
@@ -71,12 +71,12 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/50 to-transparent"></div>
 
                   <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-1 text-[11px] font-bold text-blue-300 bg-[#070b14]/90 border border-blue-500/40 rounded-full backdrop-blur-md">
+                    <span className="px-2.5 py-1 text-[11px] font-bold text-cyan-300 bg-[#070b14]/90 border border-cyan-500/40 rounded-full backdrop-blur-md">
                       {sample.category}
                     </span>
                   </div>
 
-                  <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1 bg-blue-950/80 border border-blue-500/40 rounded-lg text-blue-300 text-xs font-semibold backdrop-blur-md">
+                  <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1 bg-cyan-950/80 border border-cyan-500/40 rounded-lg text-cyan-300 text-xs font-semibold backdrop-blur-md">
                     <Eye className="w-3.5 h-3.5" />
                     <span>Click to Inspect</span>
                   </div>
@@ -85,7 +85,7 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
                 {/* Content Body */}
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="text-xl font-bold text-white font-heading group-hover:text-blue-300 transition-colors">
+                    <h3 className="text-xl font-bold text-white font-heading group-hover:text-cyan-300 transition-colors">
                       {sample.title}
                     </h3>
                     <p className="text-xs text-slate-300 leading-relaxed mt-2">
@@ -95,7 +95,7 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
 
                   {/* Preview Snippet Box */}
                   <div className="p-3.5 rounded-xl bg-[#070b14] border border-slate-800 text-xs text-slate-300 font-mono space-y-1">
-                    <div className="text-[10px] text-blue-400 font-sans font-bold uppercase tracking-wider">
+                    <div className="text-[10px] text-cyan-400 font-sans font-bold uppercase tracking-wider">
                       Framework Extract:
                     </div>
                     <p className="line-clamp-2 text-slate-300 italic">
@@ -132,7 +132,7 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
                       )}
                     </button>
 
-                    <span className="text-xs font-semibold text-blue-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    <span className="text-xs font-semibold text-cyan-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                       <span>Full Playbook</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
@@ -144,7 +144,7 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
         </div>
 
         {/* Free Outbound Playbook Strip */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900 to-blue-950/40 border border-blue-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-blue-950/40 border border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center md:text-left">
             <h4 className="text-lg sm:text-xl font-bold text-white font-heading">
               Want the Complete Editable Cold Calling & Objection Playbook?
@@ -155,7 +155,7 @@ export const WorkSamples: React.FC<WorkSamplesProps> = ({ onSelectSample, onOpen
           </div>
           <button
             onClick={onOpenContact}
-            className="shrink-0 px-6 py-3 text-xs font-bold text-slate-950 bg-blue-400 hover:bg-blue-300 rounded-xl shadow-md shadow-blue-500/20 transition-all whitespace-nowrap"
+            className="shrink-0 px-6 py-3 text-xs font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 rounded-xl shadow-md shadow-cyan-500/20 transition-all whitespace-nowrap"
           >
             Request Outbound Playbook →
           </button>

@@ -73,7 +73,7 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ slug, onNavigate, on
     return (
       <Section className="pt-40 min-h-[70vh]">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">Article not found</div>
+          <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Article not found</div>
           <h1 className="mt-4 text-4xl font-bold text-white">Let’s get you back to the sales notes.</h1>
           <Button variant="primary" className="mt-7" onClick={() => onNavigate('blog')}>Back to blog</Button>
         </div>
@@ -166,12 +166,12 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ slug, onNavigate, on
               );
             })}
 
-            <div className="mt-14 rounded-2xl border border-orange-400/20 bg-orange-400/[0.06] p-7 sm:p-9">
-              <div className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">Quick takeaways</div>
+            <div className="mt-14 rounded-2xl border border-amber-400/20 bg-amber-400/[0.06] p-7 sm:p-9">
+              <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Quick takeaways</div>
               <ul className="mt-5 space-y-3 list-none p-0">
                 {post.takeaways.map((takeaway) => (
                   <li key={takeaway} className="flex gap-3 text-[14px] text-slate-200 leading-7">
-                    <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0 mt-1" />
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-1" />
                     <span>{takeaway}</span>
                   </li>
                 ))}
@@ -180,7 +180,7 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ slug, onNavigate, on
 
             {post.faq?.length ? (
               <section className="mt-14 rounded-2xl border border-slate-700/70 bg-slate-900/60 p-7 sm:p-9" aria-labelledby="faq-heading">
-                <div className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">FAQ</div>
+                <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">FAQ</div>
                 <h2 id="faq-heading" className="mt-3">B2B appointment setting questions</h2>
                 <div className="mt-6 space-y-7">
                   {post.faq.map((item) => (
@@ -209,8 +209,8 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ slug, onNavigate, on
                   onClick={(event) => { event.preventDefault(); onOpenPost(item.slug); }}
                   className="group text-left rounded-xl border border-slate-700/60 bg-slate-900/60 p-5 hover:border-slate-500 transition-colors block"
                 >
-                  <div className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">{item.category}</div>
-                  <div className="mt-2 text-[15px] font-semibold text-white group-hover:text-orange-300 transition-colors">{item.title}</div>
+                  <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">{item.category}</div>
+                  <div className="mt-2 text-[15px] font-semibold text-white group-hover:text-amber-300 transition-colors">{item.title}</div>
                   <div className="mt-2 text-[12px] text-slate-500 leading-6">{item.excerpt}</div>
                 </a>
               ))}
@@ -218,7 +218,7 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ slug, onNavigate, on
           </div>
 
           <aside className="lg:col-span-5 rounded-2xl border border-slate-700/70 bg-slate-900/70 p-7 sm:p-8">
-            <div className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">Apply it to your funnel</div>
+            <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Apply it to your funnel</div>
             <h2 className="mt-3 text-2xl font-bold text-white">Want a second set of eyes on your outbound?</h2>
             <p className="mt-4 text-[13px] text-slate-400 leading-7">Book a free 20-minute pipeline audit. We’ll look at targeting, messaging, qualification, and the handoff to your closer.</p>
             <Button variant="primary" size="lg" onClick={onOpenContact} className="mt-7 w-full">Start an inquiry <ArrowUpRight className="w-4 h-4" /></Button>

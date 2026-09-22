@@ -96,7 +96,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService, onO
                   >
                     <span
                       className={`text-[10.5px] font-mono mt-0.5 ${
-                        active === service.id ? 'text-orange-400' : 'text-slate-600'
+                        active === service.id ? 'text-amber-400' : 'text-slate-600'
                       }`}
                     >
                       {String(i + 1).padStart(2, '0')}
@@ -117,7 +117,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService, onO
               className="bg-slate-900/60 backdrop-blur-sm border border-slate-700/60 rounded-xl p-7 sm:p-10"
             >
               <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-800/60 border border-slate-700/60 mb-6">
-                <span className="w-1 h-1 rounded-full bg-orange-400" />
+                <span className="w-1 h-1 rounded-full bg-amber-400" />
                 <span className="text-[10.5px] font-mono text-slate-300 uppercase tracking-wider">
                   {activeService.badge}
                 </span>
@@ -126,7 +126,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService, onO
               <h2 className="text-[26px] sm:text-[32px] font-bold text-white leading-tight tracking-tight">
                 {activeService.title}
               </h2>
-              <p className="mt-3 text-[15px] text-orange-400/90 font-medium font-serif italic">
+              <p className="mt-3 text-[15px] text-amber-400/90 font-medium font-serif italic">
                 {activeService.tagline}
               </p>
 
@@ -137,7 +137,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService, onO
                   <div className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider mb-2">
                     Benchmark
                   </div>
-                  <div className="text-[14px] text-orange-400 font-semibold">{activeService.metrics}</div>
+                  <div className="text-[14px] text-amber-400 font-semibold">{activeService.metrics}</div>
                 </div>
                 <div className="bg-[#0b0f19] p-5">
                   <div className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider mb-2">
@@ -154,7 +154,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService, onO
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5">
                   {activeService.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                       <span className="text-[13.5px] text-slate-300 leading-relaxed">{f}</span>
                     </li>
                   ))}

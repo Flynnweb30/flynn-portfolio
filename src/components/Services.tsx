@@ -71,13 +71,13 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>FULL OUTBOUND ENGINE</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Services Built to{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               Fill Your Sales Pipeline
             </span>
           </h2>
@@ -91,7 +91,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
               onClick={() => setActiveFilter('all')}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeFilter === 'all'
-                  ? 'bg-blue-400 text-slate-950 shadow-md shadow-blue-500/20'
+                  ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-500/20'
                   : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700'
               }`}
             >
@@ -101,7 +101,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
               onClick={() => setActiveFilter('outbound')}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeFilter === 'outbound'
-                  ? 'bg-blue-400 text-slate-950 shadow-md shadow-blue-500/20'
+                  ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-500/20'
                   : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700'
               }`}
             >
@@ -111,7 +111,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
               onClick={() => setActiveFilter('pipeline')}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeFilter === 'pipeline'
-                  ? 'bg-blue-400 text-slate-950 shadow-md shadow-blue-500/20'
+                  ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-500/20'
                   : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700'
               }`}
             >
@@ -121,7 +121,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
               onClick={() => setActiveFilter('leadership')}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeFilter === 'leadership'
-                  ? 'bg-blue-400 text-slate-950 shadow-md shadow-blue-500/20'
+                  ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-500/20'
                   : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700'
               }`}
             >
@@ -139,7 +139,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
             return (
               <div
                 key={service.id}
-                className="bg-[#0f172a] rounded-2xl border border-slate-800/90 hover:border-blue-500/40 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-blue-950/20 group"
+                className="bg-[#0f172a] rounded-2xl border border-slate-800/90 hover:border-cyan-500/40 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 group"
                 id={`service-card-${service.id}`}
               >
                 {/* Visual Image Header */}
@@ -154,13 +154,13 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
                   
                   {/* Badge */}
                   <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-1 text-[11px] font-bold text-blue-300 bg-[#070b14]/90 border border-blue-500/40 rounded-full backdrop-blur-md">
+                    <span className="px-2.5 py-1 text-[11px] font-bold text-cyan-300 bg-[#070b14]/90 border border-cyan-500/40 rounded-full backdrop-blur-md">
                       {service.badge}
                     </span>
                   </div>
 
                   {/* Icon badge */}
-                  <div className="absolute bottom-3 left-4 w-10 h-10 rounded-xl bg-blue-400 text-slate-950 flex items-center justify-center shadow-lg shadow-blue-400/20 font-bold">
+                  <div className="absolute bottom-3 left-4 w-10 h-10 rounded-xl bg-cyan-400 text-slate-950 flex items-center justify-center shadow-lg shadow-cyan-400/20 font-bold">
                     <Icon className="w-5 h-5" />
                   </div>
                 </div>
@@ -168,10 +168,10 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
                 {/* Content Body */}
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="text-lg font-bold text-white font-heading group-hover:text-blue-300 transition-colors">
+                    <h3 className="text-lg font-bold text-white font-heading group-hover:text-cyan-300 transition-colors">
                       {service.title}
                     </h3>
-                    <p className="text-xs text-blue-400/90 font-medium mt-1">
+                    <p className="text-xs text-cyan-400/90 font-medium mt-1">
                       {service.tagline}
                     </p>
                     <p className="text-xs text-slate-300 leading-relaxed mt-3">
@@ -182,7 +182,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
                   {/* Benchmark Metric Pill */}
                   <div className="bg-[#070b14] border border-slate-800 p-2.5 rounded-lg text-xs">
                     <span className="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">Key Benchmark</span>
-                    <span className="text-blue-300 font-bold">{service.metrics}</span>
+                    <span className="text-cyan-300 font-bold">{service.metrics}</span>
                   </div>
 
                   {/* Features bullets */}
@@ -216,7 +216,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
                   <div className="pt-3 flex items-center justify-between gap-2">
                     <button
                       onClick={() => onSelectService(service)}
-                      className="text-xs font-semibold text-slate-300 hover:text-blue-400 flex items-center gap-1 group/btn"
+                      className="text-xs font-semibold text-slate-300 hover:text-cyan-400 flex items-center gap-1 group/btn"
                     >
                       <span>View Deliverables</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
@@ -224,7 +224,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
 
                     <button
                       onClick={() => onOpenContactWithService(service.title)}
-                      className="px-3 py-1.5 text-xs font-semibold bg-blue-500/10 hover:bg-blue-400 hover:text-slate-950 text-blue-300 border border-blue-500/30 rounded-lg transition-all"
+                      className="px-3 py-1.5 text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-400 hover:text-slate-950 text-cyan-300 border border-cyan-500/30 rounded-lg transition-all"
                     >
                       Inquire →
                     </button>
@@ -236,7 +236,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
         </div>
 
         {/* Bottom Banner */}
-        <div className="mt-14 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900 to-blue-950/40 border border-blue-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="mt-14 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-blue-950/40 border border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <h4 className="text-lg sm:text-xl font-bold text-white font-heading">
               Need a Custom Hybrid Campaign (Phone + LinkedIn + Email)?
@@ -247,7 +247,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService, onOpenConta
           </div>
           <button
             onClick={() => onOpenContactWithService("Custom Hybrid Outbound Campaign")}
-            className="shrink-0 px-6 py-3 text-xs font-bold text-slate-950 bg-blue-400 hover:bg-blue-300 rounded-xl shadow-md shadow-blue-500/20 transition-all"
+            className="shrink-0 px-6 py-3 text-xs font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 rounded-xl shadow-md shadow-cyan-500/20 transition-all"
           >
             Design My Custom Outbound Motion →
           </button>

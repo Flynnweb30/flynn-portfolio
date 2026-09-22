@@ -56,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
             <button onClick={() => handleNav('home')} className="flex items-center gap-3 group" aria-label="Flynn James — homepage">
-              <div className="relative w-9 h-9 rounded-lg overflow-hidden group-hover:ring-1 group-hover:ring-orange-400/60 transition-all">
+              <div className="relative w-9 h-9 rounded-lg overflow-hidden group-hover:ring-1 group-hover:ring-amber-400/60 transition-all">
                 <img src="/favicon.svg" alt="Flynn James logo" width="36" height="36" className="w-full h-full" decoding="async" />
               </div>
               <div className="hidden sm:flex flex-col items-start leading-none">
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
               <button
                 onClick={onOpenContact}
                 aria-label="Contact Flynn James"
-                className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[12.5px] font-semibold text-slate-900 bg-orange-400 hover:bg-orange-300 rounded-md transition-colors"
+                className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[12.5px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
                 <span>Get in Touch</span>
@@ -170,14 +170,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
                           }`}
                         >
                           <div className="flex items-baseline gap-3">
-                            <span className={`text-[11px] font-mono ${isActive ? 'text-orange-400' : 'text-slate-600'}`}>
+                            <span className={`text-[11px] font-mono ${isActive ? 'text-amber-400' : 'text-slate-600'}`}>
                               {item.index}
                             </span>
                             <span className="text-[15px] font-medium">{item.label}</span>
                           </div>
                           <ArrowUpRight
                             className={`w-4 h-4 ${
-                              isActive ? 'text-orange-400' : 'text-slate-600 group-hover:text-slate-400'
+                              isActive ? 'text-amber-400' : 'text-slate-600 group-hover:text-slate-400'
                             }`}
                           />
                         </a>
@@ -193,7 +193,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
                     setMobileMenuOpen(false);
                     onOpenContact();
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-3 text-[13px] font-semibold text-slate-900 bg-orange-400 hover:bg-orange-300 rounded-lg transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-3 text-[13px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors"
                 >
                   <PhoneCall className="w-4 h-4" />
                   <span>Start an Inquiry</span>

@@ -75,12 +75,12 @@ export const SamplesPage: React.FC<SamplesPageProps> = ({ onSelectSample }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                   <div className="lg:col-span-8">
                     <div className="flex items-center gap-2 mb-4">
-                      <span className="text-[10.5px] font-mono text-orange-400/80 uppercase tracking-wider">
+                      <span className="text-[10.5px] font-mono text-amber-400/80 uppercase tracking-wider">
                         {sample.category}
                       </span>
                     </div>
 
-                    <h2 className="text-[20px] sm:text-[24px] font-bold text-white leading-tight tracking-tight mb-4 group-hover:text-orange-50 transition-colors">
+                    <h2 className="text-[20px] sm:text-[24px] font-bold text-white leading-tight tracking-tight mb-4 group-hover:text-amber-50 transition-colors">
                       {sample.title}
                     </h2>
 
@@ -125,7 +125,7 @@ export const SamplesPage: React.FC<SamplesPageProps> = ({ onSelectSample }) => {
                           )}
                         </button>
 
-                        <span className="text-[11.5px] font-medium text-orange-400 inline-flex items-center gap-1">
+                        <span className="text-[11.5px] font-medium text-amber-400 inline-flex items-center gap-1">
                           Open
                           <ArrowUpRight className="w-3 h-3 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
                         </span>

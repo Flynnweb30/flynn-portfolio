@@ -61,7 +61,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onOpenPost, onOp
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-[#0b0f19]/80 to-[#0b0f19]/20" />
             <div className="relative z-10 h-full flex flex-col justify-end p-7 sm:p-10">
-              <div className="flex flex-wrap items-center gap-3 text-[10px] font-mono uppercase tracking-wider text-orange-400 mb-5">
+              <div className="flex flex-wrap items-center gap-3 text-[10px] font-mono uppercase tracking-wider text-amber-400 mb-5">
                 <span>{featured.category}</span><span className="text-slate-600">·</span><span>{featured.readTime}</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight max-w-3xl">{featured.title}</h2>
@@ -70,19 +70,19 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onOpenPost, onOp
                 href={`/blog/${featured.slug}`}
                 onClick={(event) => { event.preventDefault(); onOpenPost(featured.slug); }}
                 data-track-click="blog_featured_open"
-                className="mt-7 inline-flex w-fit items-center gap-2 text-[13px] font-semibold text-white hover:text-orange-400 transition-colors"
+                className="mt-7 inline-flex w-fit items-center gap-2 text-[13px] font-semibold text-white hover:text-amber-400 transition-colors"
               >
                 Read the playbook <ArrowUpRight className="w-4 h-4" />
               </a>
             </div>
           </motion.article>
 
-          <aside className="lg:col-span-4 rounded-2xl border border-orange-400/20 bg-orange-400/[0.06] p-7 sm:p-8 flex flex-col justify-between">
+          <aside className="lg:col-span-4 rounded-2xl border border-amber-400/20 bg-amber-400/[0.06] p-7 sm:p-8 flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-orange-400/10 border border-orange-400/20 flex items-center justify-center mb-6">
-                <Sparkles className="w-4 h-4 text-orange-400" />
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center mb-6">
+                <Sparkles className="w-4 h-4 text-amber-400" />
               </div>
-              <div className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">Free resource</div>
+              <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Free resource</div>
               <h2 className="mt-3 text-2xl font-bold text-white leading-tight">Find the leak in your outbound motion.</h2>
               <p className="mt-4 text-[13.5px] text-slate-400 leading-7">
                 Bring your ICP, current script, activity numbers, and show rate. I’ll help you identify the first three places worth fixing.
@@ -126,10 +126,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onOpenPost, onOp
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-transparent" />
                 </div>
                 <div className="p-6 sm:p-7">
-                  <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-wider text-orange-400">
+                  <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-wider text-amber-400">
                     <span>{post.category}</span><span className="text-slate-700">·</span><span className="inline-flex items-center gap-1 text-slate-500"><Clock className="w-3 h-3" />{post.readTime}</span>
                   </div>
-                  <h3 className="mt-3 text-xl font-semibold text-white leading-tight group-hover:text-orange-300 transition-colors">{post.title}</h3>
+                  <h3 className="mt-3 text-xl font-semibold text-white leading-tight group-hover:text-amber-300 transition-colors">{post.title}</h3>
                   <p className="mt-3 text-[13px] text-slate-400 leading-6">{post.excerpt}</p>
                   <div className="mt-5 inline-flex items-center gap-2 text-[12px] font-semibold text-slate-300 group-hover:text-white">Read article <ArrowUpRight className="w-3.5 h-3.5" /></div>
                 </div>
@@ -141,7 +141,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onOpenPost, onOp
 
       <Section>
         <div className="max-w-4xl mx-auto text-center rounded-2xl border border-slate-700/70 bg-slate-900/70 p-8 sm:p-12">
-          <BookOpen className="w-6 h-6 text-orange-400 mx-auto" />
+          <BookOpen className="w-6 h-6 text-amber-400 mx-auto" />
           <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mt-5">Turn insight into pipeline</div>
           <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-white">Need someone to run the outbound motion?</h2>
           <p className="mt-4 max-w-2xl mx-auto text-[14px] text-slate-400 leading-7">If you already know the market but need consistent prospecting, qualification, and booked meetings, let’s map the workflow around your team.</p>

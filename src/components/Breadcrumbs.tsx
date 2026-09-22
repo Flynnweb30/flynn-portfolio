@@ -47,7 +47,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, crumbs, onNavig
                     <a
                       href={item.url || '/'}
                       onClick={(e) => { e.preventDefault(); onNavigate?.('home'); }}
-                      className="hover:text-orange-400 transition-colors uppercase tracking-wider"
+                      className="hover:text-amber-400 transition-colors uppercase tracking-wider"
                     >
                       {name}
                     </a>

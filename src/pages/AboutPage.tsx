@@ -148,7 +148,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenContact 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="my-10 border-l-2 border-orange-400/60 pl-6"
+              className="my-10 border-l-2 border-amber-400/60 pl-6"
             >
               <p className="font-serif italic text-[19px] sm:text-[21px] text-slate-200 leading-[1.5]">
                 "A calendar invite is only as valuable as the deal it generates. My job isn't to book a slot — it's to hand
@@ -196,7 +196,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenContact 
                     alt="Flynn James, Senior B2B SDR and outbound sales specialist"
                     width={56}
                     height={56}
-                    className="w-14 h-14 rounded-lg object-cover border border-orange-400/30"
+                    className="w-14 h-14 rounded-lg object-cover border border-amber-400/30"
                     priority
                   />
                   <div>
@@ -206,7 +206,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenContact 
                 </div>
 
                 <div className="flex items-center gap-2 mb-5">
-                  <Award className="w-4 h-4 text-orange-400" />
+                  <Award className="w-4 h-4 text-amber-400" />
                   <h3 className="text-[13px] font-semibold text-white uppercase tracking-wider font-mono">
                     Operating DNA
                   </h3>
@@ -215,7 +215,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenContact 
                 <ul className="space-y-4">
                   {TRAITS.map((trait, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1 h-1 rounded-full bg-orange-400/70 shrink-0" />
+                      <span className="mt-1.5 w-1 h-1 rounded-full bg-amber-400/70 shrink-0" />
                       <span className="text-[13px] text-slate-300 leading-relaxed">{trait}</span>
                     </li>
                   ))}
@@ -231,7 +231,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenContact 
                     const Icon = item.icon;
                     return (
                       <div key={item.label} className="flex items-start gap-3">
-                        <Icon className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+                        <Icon className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                         <div className="flex-1">
                           <dt className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider">
                             {item.label}
@@ -270,7 +270,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenContact 
               >
                 <div className="flex items-start gap-4">
                   <div className="shrink-0 w-9 h-9 rounded-md bg-slate-800/60 border border-slate-700/60 flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-orange-400" />
+                    <Icon className="w-4 h-4 text-amber-400" />
                   </div>
                   <div>
                     <h3 className="text-[15px] font-semibold text-white mb-2">{p.title}</h3>

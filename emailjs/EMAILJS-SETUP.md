@@ -42,3 +42,15 @@ All variables used by the two templates are present in the submission payload.
 
 ## Important
 Do not add an EmailJS Private Key to the frontend. The Public Key is safe for browser-side EmailJS use.
+
+
+## Frontend configuration
+
+`src/analytics.ts` uses:
+- `PUBLIC_KEY`: `crekfvN6H352DXAfx`
+- `SERVICE_ID`: `service_av4pfmh`
+- `TEMPLATE_ID`: `template_dhede6o`
+- `USER_CONFIRMATION_TEMPLATE_ID`: `template_user_confirmation`
+- `TO_EMAIL`: `va.flynnjames@gmail.com`
+
+The browser sends only the Owner Notification. Link `template_user_confirmation` in the Owner Notification template's **Auto-Reply / Linked Template** setting so EmailJS automatically sends the second message.

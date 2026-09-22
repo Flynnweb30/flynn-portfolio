@@ -1,25 +1,24 @@
-import React, { lazy, Suspense, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-const CaseStudyModal = lazy(() => import('./components/CaseStudyModal').then((m) => ({ default: m.CaseStudyModal })));
-const WorkSampleModal = lazy(() => import('./components/WorkSampleModal').then((m) => ({ default: m.WorkSampleModal })));
-const ServiceDetailModal = lazy(() => import('./components/ServiceDetailModal').then((m) => ({ default: m.ServiceDetailModal }))); 
-import { Toast } from './components/Toast';
+import { CaseStudyModal } from './components/CaseStudyModal';
+import { WorkSampleModal } from './components/WorkSampleModal';
+import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { CaseStudy, WorkSample, ServiceItem, PageId } from './types';
 import { useSEO, SEO_CONFIGS } from './hooks/useSEO';
 import { trackPageView } from './analytics';
 import { getBlogPost } from './data/blogData';
 
-const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
-const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
-const ServicesPage = lazy(() => import('./pages/ServicesPage').then((m) => ({ default: m.ServicesPage })));
-const ExperiencePage = lazy(() => import('./pages/ExperiencePage').then((m) => ({ default: m.ExperiencePage })));
-const CaseStudiesPage = lazy(() => import('./pages/CaseStudiesPage').then((m) => ({ default: m.CaseStudiesPage })));
-const SamplesPage = lazy(() => import('./pages/SamplesPage').then((m) => ({ default: m.SamplesPage })));
-const BlogPage = lazy(() => import('./pages/BlogPage').then((m) => ({ default: m.BlogPage })));
-const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then((m) => ({ default: m.BlogPostPage })));
-const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })));
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { ServicesPage } from './pages/ServicesPage';
+import { ExperiencePage } from './pages/ExperiencePage';
+import { CaseStudiesPage } from './pages/CaseStudiesPage';
+import { SamplesPage } from './pages/SamplesPage';
+import { BlogPage } from './pages/BlogPage';
+import { BlogPostPage } from './pages/BlogPostPage';
+import { ContactPage } from './pages/ContactPage';
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -63,7 +62,6 @@ export default function App() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [selectedSample, setSelectedSample] = useState<WorkSample | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [contactServicePreselect, setContactServicePreselect] = useState<string | undefined>(undefined);
 
   const pageFromLocation = useCallback((): { page: PageId; slug: string | null } => {
@@ -166,7 +164,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} />;
       case 'about':
         return <AboutPage onNavigate={navigate} onOpenContact={navigateToContact} />;
       case 'services':
@@ -182,9 +180,9 @@ export default function App() {
           ? <BlogPostPage slug={currentBlogSlug} onNavigate={navigate} onOpenPost={navigateToBlogPost} onOpenContact={() => navigateToContact()} />
           : <BlogPage onNavigate={navigate} onOpenPost={navigateToBlogPost} onOpenContact={() => navigateToContact()} />;
       case 'contact':
-        return <ContactPage initialService={contactServicePreselect} onSuccessToast={setToastMessage} />;
+        return <ContactPage initialService={contactServicePreselect} />;
       default:
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} />;
     }
   };
 
@@ -192,22 +190,17 @@ export default function App() {
     <div className="min-h-screen text-slate-100 flex flex-col font-sans antialiased">
       <Navbar currentPage={currentPage} onNavigate={navigate} onOpenContact={() => navigateToContact()} />
       <main className="flex-1">
-        <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center px-6"><div className="text-center"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-orange-400" aria-hidden="true" /><p className="text-sm text-slate-400">Loading page…</p></div></div>}>
-          <AnimatePresence mode="wait">
-            <motion.div key={`${currentPage}:${currentBlogSlug || ''}`} initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={pageTransition}>
-              {renderPage()}
-            </motion.div>
-          </AnimatePresence>
-        </Suspense>
+        <AnimatePresence mode="wait">
+          <motion.div key={`${currentPage}:${currentBlogSlug || ''}`} initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={pageTransition}>
+            {renderPage()}
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer onNavigate={navigate} />
 
-      <Suspense fallback={null}>
-        <CaseStudyModal caseStudy={selectedCaseStudy} onClose={() => setSelectedCaseStudy(null)} onOpenContact={() => { setSelectedCaseStudy(null); navigateToContact(); }} />
-        <WorkSampleModal sample={selectedSample} onClose={() => setSelectedSample(null)} onOpenContact={() => { setSelectedSample(null); navigateToContact(); }} />
-        <ServiceDetailModal service={selectedService} onClose={() => setSelectedService(null)} onOpenContact={(serviceName) => { setSelectedService(null); navigateToContact(serviceName); }} />
-      </Suspense>
-      <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      <CaseStudyModal caseStudy={selectedCaseStudy} onClose={() => setSelectedCaseStudy(null)} onOpenContact={() => { setSelectedCaseStudy(null); navigateToContact(); }} />
+      <WorkSampleModal sample={selectedSample} onClose={() => setSelectedSample(null)} onOpenContact={() => { setSelectedSample(null); navigateToContact(); }} />
+      <ServiceDetailModal service={selectedService} onClose={() => setSelectedService(null)} onOpenContact={(serviceName) => { setSelectedService(null); navigateToContact(serviceName); }} />
       <div data-toast role="status" aria-live="polite" className="site-toast" />
     </div>
   );

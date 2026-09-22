@@ -137,3 +137,15 @@ Render remains configured as a static Vite site:
 - SPA fallback: `/*` → `/index.html`
 - Sitemap and robots files remain explicit static assets.
 
+
+## Production build optimization
+
+Vite is configured with a 600 KB chunk warning threshold and explicit vendor chunks for React, Framer Motion, and Lucide React. This keeps the application code and large shared dependencies separated and prevents avoidable chunk-size warnings while preserving the existing SPA architecture.
+
+Production command:
+
+`npm run build`
+
+Render Static Site settings:
+- Build Command: `npm install && npm run build`
+- Publish Directory: `dist`

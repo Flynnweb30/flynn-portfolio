@@ -47,7 +47,7 @@ export const WorkSampleModal: React.FC<WorkSampleModalProps> = ({ sample, onClos
         </button>
 
         <div className="p-7 sm:p-10 border-b border-slate-800/60 pr-16">
-          <div className="text-[11px] font-mono text-orange-400/80 uppercase tracking-wider mb-5">{sample.category}</div>
+          <div className="text-[11px] font-mono text-amber-400/80 uppercase tracking-wider mb-5">{sample.category}</div>
           <h2 className="text-[24px] sm:text-[30px] font-bold text-white leading-[1.15] tracking-tight">{sample.title}</h2>
           <p className="mt-4 text-[14px] text-slate-400 leading-[1.75]">{sample.summary}</p>
         </div>
@@ -83,13 +83,13 @@ export const WorkSampleModal: React.FC<WorkSampleModalProps> = ({ sample, onClos
 
           <div className="p-5 bg-slate-900/40 border border-slate-800/60 rounded-lg">
             <div className="flex items-center gap-2 mb-4">
-              <Lightbulb className="w-3.5 h-3.5 text-orange-400" />
+              <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
               <h3 className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Execution tips</h3>
             </div>
             <ul className="space-y-2.5">
               {sample.details.tips.map((tip, i) => (
                 <li key={i} className="flex items-start gap-3 text-[13px] text-slate-300 leading-relaxed">
-                  <span className="mt-2 w-1 h-1 rounded-full bg-orange-400/70 shrink-0" />
+                  <span className="mt-2 w-1 h-1 rounded-full bg-amber-400/70 shrink-0" />
                   <span>{tip}</span>
                 </li>
               ))}
@@ -119,7 +119,7 @@ export const WorkSampleModal: React.FC<WorkSampleModalProps> = ({ sample, onClos
               onClose();
               onOpenContact();
             }}
-            className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-orange-400 hover:bg-orange-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
+            className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
           >
             <span>Discuss on a call</span>
             <ArrowRight className="w-3.5 h-3.5" />

@@ -38,21 +38,21 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({ service,
 
         <div className="p-7 sm:p-10 border-b border-slate-800/60 pr-16">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-900/60 border border-slate-800 mb-5">
-            <span className="w-1 h-1 rounded-full bg-orange-400" />
+            <span className="w-1 h-1 rounded-full bg-amber-400" />
             <span className="text-[10.5px] font-mono text-slate-300 uppercase tracking-wider">{service.badge}</span>
           </div>
           <h2 className="text-[24px] sm:text-[28px] font-bold text-white leading-tight tracking-tight">
             {service.title}
           </h2>
-          <p className="mt-3 text-[14px] text-orange-400/90 font-serif italic">{service.tagline}</p>
+          <p className="mt-3 text-[14px] text-amber-400/90 font-serif italic">{service.tagline}</p>
         </div>
 
         <div className="p-7 sm:p-10 space-y-8">
           <p className="text-[13.5px] text-slate-300 leading-[1.8]">{service.description}</p>
 
-          <div className="p-4 bg-orange-400/5 border border-orange-400/20 rounded-lg flex items-center justify-between gap-4">
+          <div className="p-4 bg-amber-400/5 border border-amber-400/20 rounded-lg flex items-center justify-between gap-4">
             <span className="text-[11.5px] font-mono text-slate-400 uppercase tracking-wider">Benchmark</span>
-            <span className="text-[13.5px] font-semibold text-orange-400">{service.metrics}</span>
+            <span className="text-[13.5px] font-semibold text-amber-400">{service.metrics}</span>
           </div>
 
           <div>
@@ -60,7 +60,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({ service,
             <ul className="space-y-2.5">
               {service.features.map((f, i) => (
                 <li key={i} className="flex items-start gap-3 text-[13.5px] text-slate-200 leading-relaxed">
-                  <CheckCircle className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                   <span>{f}</span>
                 </li>
               ))}
@@ -99,7 +99,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({ service,
               onClose();
               onOpenContact(service.title);
             }}
-            className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-orange-400 hover:bg-orange-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
+            className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
           >
             <span>Request a proposal</span>
             <ArrowRight className="w-3.5 h-3.5" />

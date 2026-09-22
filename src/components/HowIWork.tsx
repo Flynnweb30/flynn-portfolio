@@ -19,13 +19,13 @@ export const HowIWork: React.FC<HowIWorkProps> = ({ onOpenContact }) => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
-            <GitCommit className="w-3.5 h-3.5 text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
+            <GitCommit className="w-3.5 h-3.5 text-cyan-400" />
             <span>THE 6-STEP OUTBOUND ENGINE</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             How I Work —{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               From Cold Stranger to Closed Demo
             </span>
           </h2>
@@ -45,14 +45,14 @@ export const HowIWork: React.FC<HowIWorkProps> = ({ onOpenContact }) => {
                 key={step.step}
                 className={`bg-[#0f172a] rounded-2xl border transition-all duration-300 p-6 flex flex-col justify-between ${
                   isExpanded
-                    ? 'border-blue-500/60 shadow-lg shadow-blue-950/30 bg-[#0f172a]'
+                    ? 'border-cyan-500/60 shadow-lg shadow-cyan-950/30 bg-[#0f172a]'
                     : 'border-slate-800/90 hover:border-slate-700'
                 }`}
               >
                 <div>
                   {/* Step Header */}
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-blue-400 font-heading">
+                    <span className="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-heading">
                       {step.step}
                     </span>
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800">
@@ -63,7 +63,7 @@ export const HowIWork: React.FC<HowIWorkProps> = ({ onOpenContact }) => {
                   <h3 className="text-xl font-bold text-white font-heading mb-1">
                     {step.title}
                   </h3>
-                  <div className="text-xs text-blue-300 font-medium mb-3">
+                  <div className="text-xs text-cyan-300 font-medium mb-3">
                     {step.subtitle}
                   </div>
                   
@@ -87,8 +87,8 @@ export const HowIWork: React.FC<HowIWorkProps> = ({ onOpenContact }) => {
                   </div>
 
                   {/* Concrete Outcome Box */}
-                  <div className="mt-4 p-3 rounded-xl bg-[#070b14] border border-blue-900/30 text-xs text-blue-300 flex items-start gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                  <div className="mt-4 p-3 rounded-xl bg-[#070b14] border border-cyan-900/30 text-xs text-cyan-300 flex items-start gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-white block text-[11px]">Tangible Outcome:</strong>
                       <span>{step.outcome}</span>
@@ -110,7 +110,7 @@ export const HowIWork: React.FC<HowIWorkProps> = ({ onOpenContact }) => {
           </p>
           <button
             onClick={onOpenContact}
-            className="mt-5 inline-flex items-center gap-2 px-6 py-3 text-xs font-bold text-slate-950 bg-blue-400 hover:bg-blue-300 rounded-xl shadow-md shadow-blue-500/20 transition-all"
+            className="mt-5 inline-flex items-center gap-2 px-6 py-3 text-xs font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 rounded-xl shadow-md shadow-cyan-500/20 transition-all"
           >
             <span>Discuss Your Campaign Objectives</span>
             <ArrowRight className="w-4 h-4" />
