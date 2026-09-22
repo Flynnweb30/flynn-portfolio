@@ -15,7 +15,7 @@ export const EMAILJS_CONFIG = {
   PUBLIC_KEY: 'crekfvN6H352DXAfx',
   SERVICE_ID: 'service_av4pfmh',
   TEMPLATE_ID: 'template_dhede6o',
-  VERIFICATION_TEMPLATE_ID: 'template_contact_verify',
+  USER_CONFIRMATION_TEMPLATE_ID: 'template_user_confirmation',
   TO_EMAIL: 'va.flynnjames@gmail.com',
 };
 
@@ -109,34 +109,52 @@ export function trackPageView(title: string, path = window.location.pathname): v
  * Inject and initialize EmailJS from the official CDN.
  * @returns {void}
  */
-function initEmailJS(): void {
-  if (window._emailjsInitialized) return;
+let emailJSReady: Promise<void> | null = null;
 
-  const initialize = () => {
-    if (!window.emailjs) return;
-    window.emailjs.init({ publicKey: EMAILJS_CONFIG.PUBLIC_KEY });
-    window._emailjsInitialized = true;
-    console.log('✅ EmailJS initialized');
-  };
+/**
+ * Inject and initialize EmailJS once, returning a promise that resolves only
+ * when the SDK is ready for a form submission.
+ * @returns {Promise<void>} EmailJS readiness promise.
+ */
+function initEmailJS(): Promise<void> {
+  if (window._emailjsInitialized && window.emailjs) return Promise.resolve();
+  if (emailJSReady) return emailJSReady;
 
-  if (window.emailjs) {
-    initialize();
-    return;
-  }
+  emailJSReady = new Promise<void>((resolve, reject) => {
+    const initialize = () => {
+      if (!window.emailjs) {
+        reject(new Error('EmailJS SDK loaded without the expected API.'));
+        return;
+      }
+      window.emailjs.init({ publicKey: EMAILJS_CONFIG.PUBLIC_KEY });
+      window._emailjsInitialized = true;
+      console.log('✅ EmailJS initialized');
+      resolve();
+    };
 
-  const existing = document.querySelector<HTMLScriptElement>('script[data-emailjs="true"]');
-  if (existing) {
-    existing.addEventListener('load', initialize, { once: true });
-    return;
-  }
+    if (window.emailjs) {
+      initialize();
+      return;
+    }
 
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-  script.defer = true;
-  script.dataset.emailjs = 'true';
-  script.addEventListener('load', initialize, { once: true });
-  script.addEventListener('error', () => console.error('EmailJS failed to load.'));
-  document.head.appendChild(script);
+    const existing = document.querySelector<HTMLScriptElement>('script[data-emailjs="true"]');
+    if (existing) {
+      existing.addEventListener('load', initialize, { once: true });
+      existing.addEventListener('error', () => reject(new Error('EmailJS failed to load.')), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    script.async = true;
+    script.defer = true;
+    script.dataset.emailjs = 'true';
+    script.addEventListener('load', initialize, { once: true });
+    script.addEventListener('error', () => reject(new Error('EmailJS failed to load.')), { once: true });
+    document.head.appendChild(script);
+  });
+
+  return emailJSReady;
 }
 
 /**
@@ -157,24 +175,33 @@ export function showToast(msg: string, isError = false): void {
 }
 
 /**
- * Submit an inquiry form through EmailJS.
+ * Submit a centralized inquiry form through the Owner Notification EmailJS template.
+ * The second EmailJS template is configured as the service's linked Auto-Reply,
+ * so each successful owner notification automatically sends the visitor confirmation.
  * @param {HTMLFormElement} form Inquiry form.
- * @returns {Promise<void>} Resolves after the email request completes.
+ * @returns {Promise<void>} Resolves after the owner notification request completes.
  */
 async function sendInquiry(form: HTMLFormElement): Promise<void> {
   const formData = new FormData(form);
   const get = (key: string) => String(formData.get(key) || '').trim();
 
+  const honeypot = get('website');
+  if (honeypot) {
+    trackEvent('contact_form_spam_blocked', { form_name: form.dataset.formName || 'portfolio_contact' });
+    return;
+  }
+
   const name = get('name');
-  const email = get('email');
+  const email = get('email').toLowerCase();
   const company = get('company');
   const phone = get('phone');
   const serviceNeeded = get('serviceNeeded') || get('need');
-  const targetMarket = get('targetMarket');
-  const meetingTarget = get('meetingTarget') || get('callingVolume');
+  const targetMarket = get('targetMarket') || 'Not specified';
+  const meetingTarget = get('meetingTarget') || get('callingVolume') || 'Not specified';
   const message = get('message');
+  const formType = get('form_type') || form.dataset.formName || 'portfolio_contact';
 
-  if (!name || !email || !company || !serviceNeeded || !targetMarket || !message) {
+  if (!name || !email || !company || !serviceNeeded || !message) {
     showToast('Please complete all required fields before sending your inquiry.', true);
     return;
   }
@@ -185,10 +212,16 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
     return;
   }
 
+  if (name.length < 2 || company.length < 2 || message.length < 10) {
+    showToast('Please provide a little more detail so I can respond usefully.', true);
+    return;
+  }
+
   const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   const originalButtonHTML = button?.innerHTML || '';
   if (button) {
     button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
     button.innerHTML = 'Sending inquiry... ⏳';
   }
 
@@ -199,14 +232,15 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
   });
 
   const pageUrl = window.location.href;
-  const pagePath = window.location.pathname;
-  const source = document.title || 'Flynn James Portfolio';
+  const pagePath = window.location.pathname || '/';
+  const sourcePage = document.title || 'Flynn James Portfolio';
   const userAgent = navigator.userAgent.slice(0, 500);
 
   try {
-    if (!window.emailjs) throw new Error('EmailJS is not loaded yet.');
+    await initEmailJS();
+    if (!window.emailjs) throw new Error('EmailJS is not available.');
 
-    const templateParams = {
+    const templateParams: Record<string, string> = {
       name,
       email,
       company,
@@ -214,15 +248,16 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
       serviceNeeded,
       need: serviceNeeded,
       targetMarket,
-      meetingTarget: meetingTarget || 'Not specified',
-      callingVolume: meetingTarget || 'Not specified',
+      meetingTarget,
+      callingVolume: meetingTarget,
       message,
-      to_email: EMAILJS_CONFIG.TO_EMAIL,
       reply_to: email,
+      to_email: EMAILJS_CONFIG.TO_EMAIL,
       submitted_at: submittedAt,
+      source_page: sourcePage,
       page_url: pageUrl,
       page_path: pagePath,
-      source_page: source,
+      form_type: formType,
       user_agent: userAgent,
     };
 
@@ -234,11 +269,12 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
 
     trackEvent('contact_form_submit', {
       form_name: form.dataset.formName || 'portfolio_contact',
+      form_type: formType,
       service: serviceNeeded,
       target_market: targetMarket,
     });
 
-    showToast('Inquiry sent successfully. I’ll get back to you within 24 hours.');
+    showToast('Inquiry sent successfully. A confirmation has been sent to your email.');
     form.reset();
     window.dispatchEvent(new CustomEvent('flynn:inquiry-success', {
       detail: { name, email, company, serviceNeeded },
@@ -247,6 +283,7 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
     console.error('EmailJS inquiry error:', error);
     trackEvent('contact_form_error', {
       form_name: form.dataset.formName || 'portfolio_contact',
+      form_type: formType,
     });
     showToast(
       'I couldn’t send your inquiry. Please email va.flynnjames@gmail.com directly.',
@@ -255,6 +292,7 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
   } finally {
     if (button) {
       button.disabled = false;
+      button.removeAttribute('aria-busy');
       button.innerHTML = originalButtonHTML;
     }
   }
@@ -269,7 +307,7 @@ function attachDOMFeatures(): void {
   window._analyticsDomAttached = true;
 
   /** 1. EmailJS initialization. */
-  initEmailJS();
+  void initEmailJS().catch((error) => console.error('EmailJS initialization error:', error));
 
   /** 2. Navbar scroll state with a passive, debounced listener. */
   const navbar = document.querySelector<HTMLElement>('.navbar');

@@ -62,7 +62,7 @@ export const SEO_DATA: Record<string, SEOMetadata> = {
   },
   contact: {
     title: 'Contact Flynn James | Hire a B2B SDR & Appointment Setter',
-    description: 'Book a free 20-minute pipeline audit. Direct email, phone, and LinkedIn contact for B2B SDR engagements. Response guaranteed within 24 hours.',
+    description: 'Send a direct B2B sales inquiry to Flynn James for appointment setting, cold calling, lead generation, SDR support, or outbound strategy. Reply within 24 hours.',
     canonical: `${SITE_URL}/contact`,
     ogImage: DEFAULT_OG,
   },

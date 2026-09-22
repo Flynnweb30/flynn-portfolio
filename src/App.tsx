@@ -166,7 +166,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onOpenBooking={() => navigate('contact')} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
       case 'about':
         return <AboutPage onNavigate={navigate} onOpenContact={navigateToContact} />;
       case 'services':
@@ -184,13 +184,13 @@ export default function App() {
       case 'contact':
         return <ContactPage initialService={contactServicePreselect} onSuccessToast={setToastMessage} />;
       default:
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onOpenBooking={() => navigate('contact')} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
     }
   };
 
   return (
     <div className="min-h-screen text-slate-100 flex flex-col font-sans antialiased">
-      <Navbar currentPage={currentPage} onNavigate={navigate} onOpenContact={() => navigateToContact()} onOpenBooking={() => navigate('contact')} />
+      <Navbar currentPage={currentPage} onNavigate={navigate} onOpenContact={() => navigateToContact()} />
       <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div key={`${currentPage}:${currentBlogSlug || ''}`} initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={pageTransition}>
@@ -198,7 +198,7 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
-      <Footer onNavigate={navigate} onOpenBooking={() => navigate('contact')} />
+      <Footer onNavigate={navigate} />
 
       <CaseStudyModal caseStudy={selectedCaseStudy} onClose={() => setSelectedCaseStudy(null)} onOpenContact={() => { setSelectedCaseStudy(null); navigateToContact(); }} />
       <WorkSampleModal sample={selectedSample} onClose={() => setSelectedSample(null)} onOpenContact={() => { setSelectedSample(null); navigateToContact(); }} />

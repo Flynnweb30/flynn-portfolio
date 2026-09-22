@@ -146,7 +146,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onOpenPost, onOp
           <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-white">Need someone to run the outbound motion?</h2>
           <p className="mt-4 max-w-2xl mx-auto text-[14px] text-slate-400 leading-7">If you already know the market but need consistent prospecting, qualification, and booked meetings, let’s map the workflow around your team.</p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Button variant="primary" size="lg" onClick={onOpenContact}>Book a 20-minute strategy call</Button>
+            <Button variant="primary" size="lg" onClick={onOpenContact}>Start an inquiry</Button>
             <Button variant="secondary" size="lg" onClick={() => onNavigate('case-studies')}>See the case studies</Button>
           </div>
         </div>

@@ -136,7 +136,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ caseStudy, onClo
             }}
             className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
           >
-            <span>Book a strategy call</span>
+            <span>Start an inquiry</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

@@ -5,10 +5,9 @@ import { PageId } from '../types';
 
 interface FooterProps {
   onNavigate: (page: PageId) => void;
-  onOpenBooking: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBooking }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const navItems: { label: string; page: PageId }[] = [
@@ -37,8 +36,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBooking }) => 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-8">
           <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 rounded-md bg-slate-900 border border-slate-700/80 flex items-center justify-center">
-                <span className="text-[13px] font-bold text-amber-400">FJ</span>
+              <div className="w-8 h-8 rounded-md overflow-hidden">
+                <img src="/favicon.svg" alt="Flynn James logo" width="32" height="32" className="w-full h-full" decoding="async" />
               </div>
               <span className="text-[14.5px] font-semibold text-white tracking-tight">Flynn James</span>
             </div>
@@ -127,10 +126,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBooking }) => 
               </a>
               <button
                 type="button"
-                onClick={onOpenBooking}
+                onClick={() => onNavigate('contact')}
                 className="block text-left text-blue-300 hover:text-white transition-colors font-medium"
               >
-                Book a strategy call →
+                Start an inquiry →
               </button>
               <div className="text-slate-500 pt-1">Remote · Global</div>
             </div>

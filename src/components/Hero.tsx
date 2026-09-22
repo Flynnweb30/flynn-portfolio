@@ -50,7 +50,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                 id="hero-primary-cta"
               >
                 <PhoneCall className="w-4 h-4 text-slate-950" />
-                <span>Let's Talk — Book a Discovery Call</span>
+                <span>Let's Talk — Start an Inquiry</span>
                 <ArrowRight className="w-4 h-4 text-slate-950" />
               </button>
 

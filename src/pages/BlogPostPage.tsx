@@ -221,7 +221,7 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ slug, onNavigate, on
             <div className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Apply it to your funnel</div>
             <h2 className="mt-3 text-2xl font-bold text-white">Want a second set of eyes on your outbound?</h2>
             <p className="mt-4 text-[13px] text-slate-400 leading-7">Book a free 20-minute pipeline audit. We’ll look at targeting, messaging, qualification, and the handoff to your closer.</p>
-            <Button variant="primary" size="lg" onClick={onOpenContact} className="mt-7 w-full">Book a strategy call <ArrowUpRight className="w-4 h-4" /></Button>
+            <Button variant="primary" size="lg" onClick={onOpenContact} className="mt-7 w-full">Start an inquiry <ArrowUpRight className="w-4 h-4" /></Button>
           </aside>
         </div>
       </Section>

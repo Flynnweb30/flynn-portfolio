@@ -18,7 +18,6 @@ import {
   Rocket,
   BarChart3,
   Target,
-  CalendarDays,
 } from 'lucide-react';
 import { PERSONAL_INFO, CASE_STUDIES, CORE_SERVICES, TESTIMONIALS } from '../data/portfolioData';
 import { PageId, CaseStudy, WorkSample } from '../types';
@@ -30,7 +29,6 @@ import { OptimizedImage } from '../components/OptimizedImage';
 interface HomePageProps {
   onNavigate: (page: PageId) => void;
   onOpenContact: (serviceName?: string) => void;
-  onOpenBooking: () => void;
   onSelectCaseStudy: (cs: CaseStudy) => void;
   onSelectSample: (s: WorkSample) => void;
   onSuccessToast?: (msg: string) => void;
@@ -95,7 +93,6 @@ const PAIN_POINTS = [
 export const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
   onOpenContact,
-  onOpenBooking,
   onSelectCaseStudy,
   onSuccessToast,
 }) => {
@@ -178,8 +175,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                 transition={{ duration: 0.6, delay: 0.24 }}
                 className="mt-10 flex flex-wrap items-center gap-3"
               >
-                <Button variant="primary" size="lg" onClick={() => onOpenBooking()} className="group ghl-cta-primary">
-                  <CalendarDays className="w-4 h-4" />
+                <Button variant="primary" size="lg" onClick={() => onOpenContact()} className="group ghl-cta-primary">
+                  <Mail className="w-4 h-4" />
                   Let's Talk
                 </Button>
                 <Button variant="secondary" size="lg" onClick={() => onNavigate('case-studies')} withArrow className="group">
@@ -395,6 +392,10 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <div className="lg:col-span-5">
                 <form data-inquiry-form data-form-name="lead-magnet" className="p-5 sm:p-6 rounded-xl bg-[#0b0f19]/75 border border-slate-800/80 space-y-4">
+                  <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-px w-px opacity-0" />
+                  <input type="hidden" name="targetMarket" value="Not specified" />
+                  <input type="hidden" name="meetingTarget" value="Lead magnet subscriber" />
+                  <input type="hidden" name="form_type" value="lead_magnet" />
                   <input type="hidden" name="name" value="Lead Magnet Subscriber" readOnly />
                   <input type="hidden" name="company" value="Portfolio Lead Magnet" readOnly />
                   <input type="hidden" name="need" value="Free outbound audit checklist" readOnly />
@@ -485,46 +486,11 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </Section>
 
-      {/* ── CENTRALIZED CALENDAR BOOKING ── */}
-      <Section id="calendar-booking" bordered className="section-photo bg-photo-contact">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          <div className="lg:col-span-5">
-            <SectionHeading
-              index="05"
-              eyebrow="Centralized calendar"
-              title="Let's put a real"
-              titleAccent="conversation on the calendar."
-              description="Use the custom booking tool to choose a weekday, timezone, and 20-minute strategy slot. Bring your ICP, current outbound process, and biggest bottleneck."
-            />
-            <div className="mt-7 space-y-3">
-              {['20-minute strategy call', 'Timezone-aware scheduling', 'Clear next-step agenda', 'No obligation to proceed'].map((item) => (
-                <div key={item} className="flex items-center gap-2.5 text-[13px] text-slate-300"><CheckCircle2 className="w-4 h-4 text-teal-300" />{item}</div>
-              ))}
-            </div>
-          </div>
-          <div className="lg:col-span-7">
-            <div className="calendar-widget-shell rounded-2xl border border-blue-400/20 bg-slate-950/80 backdrop-blur-md p-5 sm:p-7">
-              <div className="flex items-center justify-between gap-4 pb-5 border-b border-slate-800/80">
-                <div><div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Flynn James booking tool</div><h2 className="text-[20px] font-semibold text-white mt-1">Book your strategy call</h2></div>
-                <CalendarDays className="w-5 h-5 text-blue-300" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-                <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-400/15"><div className="text-[10px] font-mono text-slate-500 uppercase">Duration</div><div className="text-[14px] font-semibold text-white mt-2">20 minutes</div></div>
-                <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-400/15"><div className="text-[10px] font-mono text-slate-500 uppercase">Format</div><div className="text-[14px] font-semibold text-white mt-2">Strategy call</div></div>
-                <div className="p-4 rounded-xl bg-teal-500/5 border border-teal-400/15"><div className="text-[10px] font-mono text-slate-500 uppercase">Timezone</div><div className="text-[14px] font-semibold text-white mt-2">Your local zone</div></div>
-              </div>
-              <button onClick={() => onOpenBooking()} className="mt-5 w-full py-3.5 px-6 rounded-lg bg-orange-400 hover:bg-orange-300 text-slate-950 font-semibold text-[13.5px] transition-colors inline-flex items-center justify-center gap-2"><CalendarDays className="w-4 h-4" /> Open the booking calendar</button>
-              <p className="mt-3 text-center text-[10.5px] text-slate-600">Your booking details are sent securely to the existing calendar service.</p>
-            </div>
-          </div>
-        </div>
-      </Section>
-
       {/* ── CONTACT ── */}
       <Section id="contact" bordered className="section-photo bg-photo-contact">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           <div className="lg:col-span-5">
-            <SectionHeading index="06" eyebrow="Direct inquiry" title="Have a pipeline problem?" titleAccent="Let's diagnose it." description="Tell me what you sell, who you want to reach, and where the current outbound motion is breaking down. I'll reply with a practical next step." />
+            <SectionHeading index="05" eyebrow="Direct inquiry" title="Have a pipeline problem?" titleAccent="Let's diagnose it." description="Tell me what you sell, who you want to reach, and where the current outbound motion is breaking down. I'll reply with a practical next step." />
             <div className="mt-10 space-y-3">
               <a href={`mailto:${PERSONAL_INFO.email}`} className="block group p-4 bg-slate-900/60 backdrop-blur-sm border border-slate-700/60 hover:border-blue-400/25 rounded-lg transition-colors" aria-label="Email Flynn James"><div className="flex items-center gap-3"><div className="shrink-0 w-9 h-9 rounded-md bg-slate-800/60 border border-slate-700/60 flex items-center justify-center"><Mail className="w-4 h-4 text-blue-300" /></div><div><div className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider">Email</div><div className="text-[13.5px] text-white font-medium mt-0.5 break-all">{PERSONAL_INFO.email}</div></div></div></a>
               <a href={PERSONAL_INFO.linkedin} target="_blank" rel="noopener noreferrer" className="block group p-4 bg-slate-900/60 backdrop-blur-sm border border-slate-700/60 hover:border-blue-400/25 rounded-lg transition-colors" aria-label="View Flynn James LinkedIn profile"><div className="flex items-center justify-between gap-4"><div className="flex items-center gap-3"><div className="shrink-0 w-9 h-9 rounded-md bg-slate-800/60 border border-slate-700/60 flex items-center justify-center"><Linkedin className="w-4 h-4 text-blue-300" /></div><div><div className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider">LinkedIn</div><div className="text-[13.5px] text-white font-medium mt-0.5">/in/fjpontino</div></div></div><ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-slate-300" /></div></a>
@@ -539,6 +505,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div className="py-16 text-center"><div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="w-5 h-5" /></div><h2 className="text-[22px] font-bold text-white mb-3">Message received</h2><p className="text-[13.5px] text-slate-400 max-w-md mx-auto leading-relaxed">Thanks, {formData.name}. I'll be in touch at <span className="text-blue-300">{formData.email}</span> within 24 hours.</p><button onClick={() => setSubmitted(false)} className="mt-8 text-[12.5px] font-medium text-slate-400 hover:text-white transition-colors cursor-pointer">Send another message →</button></div>
               ) : (
                 <form onSubmit={handleSubmit} data-inquiry-form data-form-name="home-contact" className="space-y-5">
+                  <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-px w-px opacity-0" />
+                  <input type="hidden" name="form_type" value="home_contact" />
                   <div className="pb-5 border-b border-slate-800/60"><h2 className="text-[18px] font-semibold text-white">Tell me about the opportunity</h2><p className="text-[12.5px] text-slate-500 mt-1.5">Confidential. Practical. No pressure.</p></div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div><label htmlFor="home-contact-name" className={labelCls}>Full name *</label><input id="home-contact-name" name="name" type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Jane Smith" className={inputCls} /></div>
@@ -570,8 +538,8 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="relative max-w-2xl mx-auto z-10">
             <span className="text-[11px] font-mono text-orange-300 tracking-wider uppercase">Ready when you are</span>
             <h2 className="mt-5 text-[32px] sm:text-[42px] font-bold text-white leading-[1.1] tracking-tight">Let's turn your outbound motion into<br /><span className="font-serif italic hero-gradient-text">qualified conversations.</span></h2>
-            <p className="mt-6 text-[15px] text-slate-300 max-w-xl mx-auto">Book a focused strategy call, review the case studies, or start with the free outbound audit checklist.</p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3"><Button variant="primary" size="lg" onClick={() => onOpenBooking()} className="ghl-cta-primary"><CalendarDays className="w-4 h-4" />Book a strategy call</Button><Button variant="secondary" size="lg" onClick={() => onNavigate('blog')} withArrow className="group">Read the sales blog</Button></div>
+            <p className="mt-6 text-[15px] text-slate-300 max-w-xl mx-auto">Send a focused inquiry, review the case studies, or start with the free outbound audit checklist.</p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3"><Button variant="primary" size="lg" onClick={() => onOpenContact()} className="ghl-cta-primary">Start an inquiry <ArrowUpRight className="w-4 h-4" /></Button><Button variant="secondary" size="lg" onClick={() => onNavigate('blog')} withArrow className="group">Read the sales blog</Button></div>
             <div className="mt-10 pt-8 border-t border-slate-700/50 grid grid-cols-3 gap-6 max-w-lg mx-auto">{[{ l: 'Experience', v: '11+ years' }, { l: 'Pipeline', v: '$1.8M+' }, { l: 'Meetings', v: '30+ / mo' }].map((s) => <div key={s.l}><div className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider">{s.l}</div><div className="text-[14px] font-semibold text-white mt-1.5">{s.v}</div></div>)}</div>
           </div>
         </motion.div>

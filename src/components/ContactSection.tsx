@@ -55,6 +55,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService, 
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="flex justify-center mb-5">
+            <img src="/favicon.svg" alt="Flynn James logo" width="44" height="44" className="w-11 h-11 rounded-xl shadow-lg shadow-cyan-500/10" decoding="async" />
+          </div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
             <Mail className="w-3.5 h-3.5 text-cyan-400" />
             <span>LET'S BUILD YOUR PIPELINE</span>

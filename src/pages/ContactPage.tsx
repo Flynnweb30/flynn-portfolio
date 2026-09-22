@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CalendarDays, ShieldCheck, Clock3, MailCheck } from 'lucide-react';
+import { MailCheck, ShieldCheck, Clock3 } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { Section } from '../components/Section';
-import { BookingModal } from '../components/BookingModal';
+import { ContactSection } from '../components/ContactSection';
 import { useSEO } from '../hooks/useSEO';
 
 interface ContactPageProps {
@@ -12,22 +12,22 @@ interface ContactPageProps {
 }
 
 /**
- * Dedicated contact / booking page.
- * The booking workflow is rendered inline so Contact is a real route,
- * not a dynamic popup, while preserving the existing booking architecture.
+ * Dedicated contact page using the same centralized inquiry form as the homepage.
+ * No calendar or booking workflow is required; EmailJS handles owner notification
+ * and the linked visitor confirmation template.
  */
-export const ContactPage: React.FC<ContactPageProps> = ({ initialService }) => {
+export const ContactPage: React.FC<ContactPageProps> = ({ initialService, onSuccessToast }) => {
   useSEO({
-    title: 'Book a Call with Flynn James | Senior SDR & Appointment Setter',
+    title: 'Contact Flynn James | Hire a B2B SDR & Appointment Setter',
     description:
-      'Book a 20-minute B2B sales strategy call with Flynn James. Choose what brings you here, verify your email, and select a time that works for you.',
+      'Send a direct B2B sales inquiry to Flynn James for appointment setting, cold calling, lead generation, SDR support, or outbound strategy.',
     canonical: '/contact',
-    keywords: 'book B2B SDR call, appointment setter, senior SDR, outbound sales, cold calling specialist',
+    keywords: 'contact B2B SDR, hire appointment setter, cold calling specialist, outbound sales support, SDR team lead',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'ContactPage',
-      name: 'Book a Call with Flynn James',
-      description: 'Dedicated booking page for a B2B outbound sales strategy call with Flynn James.',
+      name: 'Contact Flynn James',
+      description: 'Direct inquiry page for B2B SDR, appointment setting, cold calling, and outbound sales support.',
       url: 'https://flynnjamespontino-porfolio.onrender.com/contact',
     },
   });
@@ -35,11 +35,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialService }) => {
   return (
     <>
       <PageHeader
-        index="07"
-        eyebrow="Book a Call"
+        index="08"
+        eyebrow="Direct inquiry"
         title="Let's talk pipeline,"
         titleAccent="not pleasantries."
-        description="Start with what brings you here, verify your email, then choose a time for a focused 20-minute conversation about your outbound goals."
+        description="Tell me what you sell, who you want to reach, and where your outbound process is breaking down. I’ll review the details and reply with a practical next step."
         photoClass="bg-photo-contact"
       />
 
@@ -47,9 +47,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialService }) => {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
             {[
-              { icon: CalendarDays, title: '20-minute working session', text: 'A focused conversation around your goals, pipeline, or hiring needs.' },
-              { icon: MailCheck, title: 'Email verified', text: 'A verification step helps keep bookings tied to a reachable inbox.' },
-              { icon: ShieldCheck, title: 'No-pressure process', text: 'No generic pitch deck. Bring the challenge you want to solve.' },
+              { icon: MailCheck, title: 'Direct response', text: 'Your inquiry goes straight to Flynn James and a confirmation is sent to your inbox.' },
+              { icon: ShieldCheck, title: 'Confidential', text: 'Share the sales challenge, ICP, market, and goals you are comfortable discussing.' },
+              { icon: Clock3, title: 'Practical next step', text: 'Expect a focused response around fit, priorities, and measurable outbound outcomes.' },
             ].map(({ icon: Icon, title, text }) => (
               <motion.div
                 key={title}
@@ -67,10 +67,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialService }) => {
 
           <div className="mb-6 flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-slate-500">
             <Clock3 className="w-3.5 h-3.5 text-amber-400" />
-            Secure booking · Timezone-aware scheduling · Email verification
+            Simple inquiry · Email confirmation · Response within 24 hours
           </div>
 
-          <BookingModal open inline initialService={initialService} onClose={() => undefined} />
+          <ContactSection initialService={initialService} onSuccessToast={onSuccessToast} />
         </div>
       </Section>
     </>

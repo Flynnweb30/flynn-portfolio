@@ -9,7 +9,6 @@ interface NavbarProps {
   currentPage: PageId;
   onNavigate: (page: PageId) => void;
   onOpenContact: () => void;
-  onOpenBooking: () => void;
 }
 
 const NAV_ITEMS: { label: string; page: PageId; index: string; ariaLabel: string }[] = [
@@ -23,7 +22,7 @@ const NAV_ITEMS: { label: string; page: PageId; index: string; ariaLabel: string
   { label: 'Contact', page: 'contact', index: '08', ariaLabel: 'Contact Flynn James' },
 ];
 
-export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenContact, onOpenBooking }) => {
+export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -57,9 +56,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
             <button onClick={() => handleNav('home')} className="flex items-center gap-3 group" aria-label="Flynn James — homepage">
-              <div className="relative w-9 h-9 rounded-lg bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden group-hover:border-amber-400/60 transition-colors">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="relative font-bold text-[15px] text-amber-400 tracking-tight">FJ</span>
+              <div className="relative w-9 h-9 rounded-lg overflow-hidden group-hover:ring-1 group-hover:ring-amber-400/60 transition-all">
+                <img src="/favicon.svg" alt="Flynn James logo" width="36" height="36" className="w-full h-full" decoding="async" />
               </div>
               <div className="hidden sm:flex flex-col items-start leading-none">
                 <span className="text-[14px] font-semibold text-white tracking-tight">Flynn James</span>
@@ -109,8 +107,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
               </a>
 
               <button
-                onClick={onOpenBooking}
-                aria-label="Book a strategy call"
+                onClick={onOpenContact}
+                aria-label="Contact Flynn James"
                 className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[12.5px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
@@ -193,12 +191,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onOpenC
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    onOpenBooking();
+                    onOpenContact();
                   }}
                   className="w-full flex items-center justify-center gap-2 py-3 text-[13px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors"
                 >
                   <PhoneCall className="w-4 h-4" />
-                  <span>Book a Call</span>
+                  <span>Start an Inquiry</span>
                 </button>
                 <a
                   href={PERSONAL_INFO.resumeUrl}
