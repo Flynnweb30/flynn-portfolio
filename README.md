@@ -137,3 +137,27 @@ Render remains configured as a static Vite site:
 - SPA fallback: `/*` → `/index.html`
 - Sitemap and robots files remain explicit static assets.
 
+
+## Bundle-size optimization
+
+The Vite build is configured to address chunk-size warnings through actual code splitting before relying on the warning threshold:
+
+- All major route pages are loaded with `React.lazy()` so the initial bundle does not include every page.
+- Large modal components are also lazy-loaded and only downloaded when needed.
+- `react`, `framer-motion`, and `lucide-react` are separated into stable vendor chunks through Rollup `manualChunks`.
+- `build.chunkSizeWarningLimit` is set to `700` KB as a guardrail after optimization. It is not intended to suppress an oversized application bundle.
+
+Run `npm run build` after installing dependencies. If a future dependency causes a new large chunk, investigate that chunk first rather than increasing the warning limit again.
+
+## Deployment checklist
+
+Before deploying to Render:
+
+1. Confirm `npm install` completes successfully.
+2. Run `npm run build` and confirm Vite finishes without errors.
+3. Confirm `dist/index.html`, `dist/sitemap.xml`, and `dist/robots.txt` exist.
+4. Confirm direct routes such as `/about`, `/services`, `/blog`, and `/contact` load through the Render SPA rewrite.
+5. Confirm the Contact form has the correct EmailJS Public Key, Service ID, owner template ID, and Auto-Reply template ID.
+6. Submit a real test inquiry and verify both the owner notification and visitor confirmation.
+7. Test the navigation, mobile menu, forms, modal interactions, blog routes, and responsive layout on desktop and mobile widths.
+8. After deployment, verify the live favicon, canonical URLs, `robots.txt`, and `sitemap.xml`.
