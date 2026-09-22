@@ -46,7 +46,7 @@ export const PrivacyPage: React.FC = () => {
           <div>
             <h2 className="text-[22px] font-bold text-white mb-4">Your rights</h2>
             <p>
-              You can request deletion of any data submitted through this site at any time by emailing <a href="mailto:va.flynnjames@gmail.com" className="text-amber-400 hover:underline">va.flynnjames@gmail.com</a>.
+              You can request deletion of any data submitted through this site at any time by emailing <a href="mailto:va.flynnjames@gmail.com" className="text-orange-400 hover:underline">va.flynnjames@gmail.com</a>.
             </p>
           </div>
         </article>

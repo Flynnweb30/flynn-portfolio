@@ -58,8 +58,8 @@ export const CredibilityBar: React.FC = () => {
                 key={stat.label}
                 className={`pt-4 sm:pt-0 ${idx !== 0 ? 'sm:pl-4' : ''} flex flex-col items-center sm:items-start text-center sm:text-left`}
               >
-                <div className="flex items-center gap-1.5 text-cyan-400 mb-1">
-                  <Icon className="w-4 h-4 text-cyan-400" />
+                <div className="flex items-center gap-1.5 text-blue-400 mb-1">
+                  <Icon className="w-4 h-4 text-blue-400" />
                   <span className="text-2xl sm:text-3xl font-extrabold text-white font-heading tracking-tight">
                     {stat.value}
                   </span>

@@ -38,7 +38,7 @@ export const SkillsAndTools: React.FC = () => {
       case 'Expert':
         return 'text-emerald-400 bg-emerald-950/70 border-emerald-500/40';
       case 'Advanced':
-        return 'text-cyan-300 bg-cyan-950/70 border-cyan-500/40';
+        return 'text-blue-300 bg-blue-950/70 border-blue-500/40';
       default:
         return 'text-blue-300 bg-blue-950/70 border-blue-500/40';
     }
@@ -50,13 +50,13 @@ export const SkillsAndTools: React.FC = () => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
-            <Wrench className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
+            <Wrench className="w-3.5 h-3.5 text-blue-400" />
             <span>TECH STACK & CORE COMPETENCIES</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Tools & Methodologies That{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               Drive Outbound Performance
             </span>
           </h2>
@@ -73,7 +73,7 @@ export const SkillsAndTools: React.FC = () => {
               onClick={() => setSelectedCategory(idx)}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border ${
                 selectedCategory === idx
-                  ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/60 shadow-md shadow-cyan-950/30'
+                  ? 'bg-blue-500/10 text-blue-300 border-blue-500/60 shadow-md shadow-blue-950/30'
                   : 'bg-[#0f172a] text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
               }`}
               id={`tool-cat-btn-${idx}`}
@@ -94,7 +94,7 @@ export const SkillsAndTools: React.FC = () => {
                 {TOOL_CATEGORIES[selectedCategory].description}
               </p>
             </div>
-            <span className="text-[11px] font-semibold text-cyan-300 bg-cyan-950/50 border border-cyan-500/30 px-3 py-1 rounded-full self-start sm:self-auto">
+            <span className="text-[11px] font-semibold text-blue-300 bg-blue-950/50 border border-blue-500/30 px-3 py-1 rounded-full self-start sm:self-auto">
               {TOOL_CATEGORIES[selectedCategory].tools.length} Core Tools / Skills
             </span>
           </div>
@@ -106,14 +106,14 @@ export const SkillsAndTools: React.FC = () => {
               return (
                 <div
                   key={tool.name}
-                  className="bg-[#070b14] p-5 rounded-xl border border-slate-800/90 hover:border-cyan-500/40 transition-all group"
+                  className="bg-[#070b14] p-5 rounded-xl border border-slate-800/90 hover:border-blue-500/40 transition-all group"
                 >
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-400 group-hover:text-slate-950 transition-all">
+                      <div className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-blue-400 group-hover:bg-blue-400 group-hover:text-slate-950 transition-all">
                         <Icon className="w-4 h-4" />
                       </div>
-                      <h4 className="text-sm font-bold text-white font-heading group-hover:text-cyan-300 transition-colors">
+                      <h4 className="text-sm font-bold text-white font-heading group-hover:text-blue-300 transition-colors">
                         {tool.name}
                       </h4>
                     </div>
@@ -147,7 +147,7 @@ export const SkillsAndTools: React.FC = () => {
             ].map((skill) => (
               <span
                 key={skill}
-                className="px-3 py-1 text-xs font-medium bg-[#0f172a] border border-slate-800 text-slate-300 rounded-lg hover:border-cyan-500/30 hover:text-cyan-300 transition-colors"
+                className="px-3 py-1 text-xs font-medium bg-[#0f172a] border border-slate-800 text-slate-300 rounded-lg hover:border-blue-500/30 hover:text-blue-300 transition-colors"
               >
                 {skill}
               </span>

@@ -10,7 +10,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
   return (
     <section id="hero" className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
       {/* Ambient background glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[450px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[450px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute top-1/3 right-10 w-[350px] h-[350px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -19,7 +19,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
           {/* Left Column: Headline & Messaging */}
           <div className="lg:col-span-7 space-y-7 text-center lg:text-left">
             {/* Live Status Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-medium backdrop-blur-md shadow-sm shadow-cyan-500/10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-950/60 border border-blue-500/40 text-blue-300 text-xs font-medium backdrop-blur-md shadow-sm shadow-blue-500/10">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="font-semibold tracking-wide">SENIOR B2B SDR & JUNIOR SALES TEAM LEAD</span>
               <span className="text-slate-500">|</span>
@@ -29,7 +29,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
               I Turn Cold Outbound Into{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
                 Qualified Revenue.
               </span>
             </h1>
@@ -38,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
               B2B Lead Generation Specialist, Appointment Setter, and Cold Caller with{' '}
               <strong className="text-white font-semibold">11+ years of quota-crushing outbound execution</strong>. 
-              Over <span className="text-cyan-300 font-semibold">$1.8M+ in sourced pipeline</span>, 120–150% quota attainment, 
+              Over <span className="text-blue-300 font-semibold">$1.8M+ in sourced pipeline</span>, 120–150% quota attainment, 
               and 30+ qualified discovery meetings booked every month across US, UK, ANZ, and Singapore.
             </p>
 
@@ -46,7 +46,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <button
                 onClick={onOpenContact}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-teal-300 hover:from-cyan-300 hover:to-white rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-400/50 transition-all transform active:scale-95"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-slate-950 bg-gradient-to-r from-blue-400 via-blue-300 to-teal-300 hover:from-blue-300 hover:to-white rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50 transition-all transform active:scale-95"
                 id="hero-primary-cta"
               >
                 <PhoneCall className="w-4 h-4 text-slate-950" />
@@ -56,7 +56,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
 
               <a
                 href="#cases"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-slate-200 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500/50 rounded-xl transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-slate-200 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-blue-500/50 rounded-xl transition-all"
                 id="hero-secondary-cta"
               >
                 <span>Explore Results & Cases</span>
@@ -66,7 +66,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                 href={PERSONAL_INFO.resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-3.5 text-xs font-semibold text-slate-400 hover:text-cyan-400 transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-3.5 text-xs font-semibold text-slate-400 hover:text-blue-400 transition-colors"
                 id="hero-resume-link"
               >
                 <FileText className="w-4 h-4" />
@@ -77,19 +77,19 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
             {/* Trust Badges */}
             <div className="pt-4 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto lg:mx-0 text-left">
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <CheckCircle className="w-4 h-4 text-cyan-400 shrink-0" />
+                <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>Zero Ramp-Up</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <Globe className="w-4 h-4 text-cyan-400 shrink-0" />
+                <Globe className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>5 Global Markets</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>100% CRM Discipline</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <TrendingUp className="w-4 h-4 text-cyan-400 shrink-0" />
+                <TrendingUp className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>70%+ Show-Up Rate</span>
               </div>
             </div>
@@ -103,13 +103,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
               <div className="bg-gradient-to-b from-[#0f172a] to-[#0a0f1c] p-6 sm:p-7 rounded-2xl border border-slate-800 shadow-2xl relative overflow-hidden backdrop-blur-xl">
                 
                 {/* Decorative glow inside card */}
-                <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 {/* Profile Header Block */}
                 <div className="flex items-center gap-4 pb-6 border-b border-slate-800">
                   <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/20">
-                      <div className="w-full h-full bg-[#0a0f1c] rounded-[14px] flex items-center justify-center font-extrabold text-2xl text-cyan-400">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-blue-500/20">
+                      <div className="w-full h-full bg-[#0a0f1c] rounded-[14px] flex items-center justify-center font-extrabold text-2xl text-blue-400">
                         FJ
                       </div>
                     </div>
@@ -119,7 +119,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                     <h3 className="text-xl font-bold text-white font-heading">
                       {PERSONAL_INFO.shortName}
                     </h3>
-                    <p className="text-xs text-cyan-300 font-medium">
+                    <p className="text-xs text-blue-300 font-medium">
                       Senior SDR & Junior Sales Team Lead
                     </p>
                     <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
@@ -135,7 +135,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                     <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
                       Pipeline Sourced
                     </span>
-                    <span className="text-2xl font-extrabold text-cyan-400 font-heading">
+                    <span className="text-2xl font-extrabold text-blue-400 font-heading">
                       $1.8M+
                     </span>
                     <span className="text-[11px] text-emerald-400 flex items-center gap-1 mt-0.5">
@@ -150,7 +150,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                     <span className="text-2xl font-extrabold text-white font-heading">
                       30+
                     </span>
-                    <span className="text-[11px] text-cyan-300 flex items-center gap-1 mt-0.5">
+                    <span className="text-[11px] text-blue-300 flex items-center gap-1 mt-0.5">
                       <Calendar className="w-3 h-3" /> High-intent calls
                     </span>
                   </div>
@@ -181,10 +181,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                 </div>
 
                 {/* Live Endorsement / Quote Banner */}
-                <div className="bg-cyan-950/40 border border-cyan-500/30 rounded-xl p-3.5 mt-1 text-left">
+                <div className="bg-blue-950/40 border border-blue-500/30 rounded-xl p-3.5 mt-1 text-left">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-amber-400 text-xs tracking-wider">★★★★★</span>
-                    <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-wide bg-cyan-900/60 px-1.5 py-0.5 rounded">
+                    <span className="text-orange-400 text-xs tracking-wider">★★★★★</span>
+                    <span className="text-[10px] font-bold text-blue-300 uppercase tracking-wide bg-blue-900/60 px-1.5 py-0.5 rounded">
                       Verified Manager Feedback
                     </span>
                   </div>
@@ -199,12 +199,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact }) => {
                 {/* Bottom Quick Connect Action */}
                 <div className="mt-5 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                    <span className="w-2 h-2 rounded-full bg-blue-400"></span>
                     Ready for immediate deployment
                   </span>
                   <button
                     onClick={onOpenContact}
-                    className="text-cyan-400 font-semibold hover:text-cyan-300 underline underline-offset-2"
+                    className="text-blue-400 font-semibold hover:text-blue-300 underline underline-offset-2"
                   >
                     Check Availability →
                   </button>

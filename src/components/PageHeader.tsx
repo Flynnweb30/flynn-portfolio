@@ -35,7 +35,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           className={`max-w-3xl rounded-2xl px-0 sm:px-2 ${align === 'center' ? 'mx-auto' : ''}`}
         >
           <div className={`flex items-center gap-3 mb-6 ${align === 'center' ? 'justify-center' : ''}`}>
-            <span className="text-[11px] font-mono text-amber-400/80 tracking-wider">{index}</span>
+            <span className="text-[11px] font-mono text-orange-400/80 tracking-wider">{index}</span>
             <span className="h-px w-8 bg-slate-700" />
             <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">{eyebrow}</span>
           </div>
@@ -45,7 +45,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             {titleAccent && (
               <>
                 {' '}
-                <span className="font-serif italic text-amber-400/90">{titleAccent}</span>
+                <span className="font-serif italic text-orange-400/90">{titleAccent}</span>
               </>
             )}
           </h1>

@@ -95,13 +95,13 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onSelectCaseSt
                     <span className="text-slate-400">{cs.period}</span>
                   </div>
 
-                  <h2 className="text-[22px] sm:text-[26px] font-bold text-white leading-[1.2] tracking-tight mb-4 group-hover:text-amber-50 transition-colors">
+                  <h2 className="text-[22px] sm:text-[26px] font-bold text-white leading-[1.2] tracking-tight mb-4 group-hover:text-orange-50 transition-colors">
                     {cs.title}
                   </h2>
 
                   <p className="text-[14px] text-slate-400 leading-[1.75] line-clamp-3">{cs.challenge}</p>
 
-                  <div className="mt-6 flex items-center gap-2 text-[12.5px] font-medium text-slate-400 group-hover:text-amber-400 transition-colors">
+                  <div className="mt-6 flex items-center gap-2 text-[12.5px] font-medium text-slate-400 group-hover:text-orange-400 transition-colors">
                     <span>Read full breakdown</span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
@@ -112,7 +112,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onSelectCaseSt
                     <div className="text-[10.5px] font-mono text-slate-500 uppercase tracking-wider mb-2">
                       Headline outcome
                     </div>
-                    <div className="text-[32px] sm:text-[40px] font-bold text-amber-400 tabular tracking-tight leading-none">
+                    <div className="text-[32px] sm:text-[40px] font-bold text-orange-400 tabular tracking-tight leading-none">
                       {cs.headlineMetric}
                     </div>
                   </div>

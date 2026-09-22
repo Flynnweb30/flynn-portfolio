@@ -192,7 +192,7 @@ export default function App() {
     <div className="min-h-screen text-slate-100 flex flex-col font-sans antialiased">
       <Navbar currentPage={currentPage} onNavigate={navigate} onOpenContact={() => navigateToContact()} />
       <main className="flex-1">
-        <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center px-6"><div className="text-center"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" aria-hidden="true" /><p className="text-sm text-slate-400">Loading page…</p></div></div>}>
+        <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center px-6"><div className="text-center"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-orange-400" aria-hidden="true" /><p className="text-sm text-slate-400">Loading page…</p></div></div>}>
           <AnimatePresence mode="wait">
             <motion.div key={`${currentPage}:${currentBlogSlug || ''}`} initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={pageTransition}>
               {renderPage()}

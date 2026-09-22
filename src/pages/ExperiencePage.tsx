@@ -79,14 +79,14 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onOpenContact })
                           <span
                             className={`relative z-10 shrink-0 mt-1.5 w-3 h-3 rounded-full border-2 transition-colors ${
                               isActive
-                                ? 'bg-amber-400 border-amber-400'
+                                ? 'bg-orange-400 border-orange-400'
                                 : 'bg-[#0b0f19] border-slate-700 group-hover:border-slate-500'
                             }`}
                           />
                           <div className="flex-1 min-w-0">
                             <div
                               className={`text-[11px] font-mono ${
-                                isActive ? 'text-amber-400' : 'text-slate-500'
+                                isActive ? 'text-orange-400' : 'text-slate-500'
                               } transition-colors`}
                             >
                               {item.period}
@@ -141,11 +141,11 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onOpenContact })
                   <span className="text-slate-500"> · {exp.industry}</span>
                 </div>
 
-                <div className="mt-6 inline-flex items-baseline gap-3 px-4 py-2 bg-amber-400/5 border border-amber-400/20 rounded-lg">
-                  <span className="text-[10.5px] font-mono text-amber-400/70 uppercase tracking-wider">
+                <div className="mt-6 inline-flex items-baseline gap-3 px-4 py-2 bg-orange-400/5 border border-orange-400/20 rounded-lg">
+                  <span className="text-[10.5px] font-mono text-orange-400/70 uppercase tracking-wider">
                     Key metric
                   </span>
-                  <span className="text-[15px] font-semibold text-amber-400 tabular">{exp.highlightMetric}</span>
+                  <span className="text-[15px] font-semibold text-orange-400 tabular">{exp.highlightMetric}</span>
                 </div>
               </div>
 
@@ -165,7 +165,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onOpenContact })
 
               <div className="pt-7">
                 <h3 className="text-[11px] font-mono text-slate-500 uppercase tracking-wider mb-5 flex items-center gap-2">
-                  <Award className="w-3.5 h-3.5 text-amber-400" />
+                  <Award className="w-3.5 h-3.5 text-orange-400" />
                   Key achievements
                 </h3>
                 <div className="space-y-3">
@@ -174,7 +174,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onOpenContact })
                       key={i}
                       className="flex items-start gap-3 p-3.5 bg-[#0b0f19]/60 border border-slate-800/60 rounded-lg"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
                       <span className="text-[13.5px] text-slate-200 leading-relaxed">{a}</span>
                     </div>
                   ))}
@@ -218,7 +218,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onOpenContact })
                 'Customer acquisition & retail services',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-[13.5px] text-slate-300 leading-relaxed">
-                  <span className="mt-2 w-1 h-1 rounded-full bg-amber-400/70 shrink-0" />
+                  <span className="mt-2 w-1 h-1 rounded-full bg-orange-400/70 shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -236,7 +236,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onOpenContact })
                 'Philippines — native market experience',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-[13.5px] text-slate-300 leading-relaxed">
-                  <span className="mt-2 w-1 h-1 rounded-full bg-amber-400/70 shrink-0" />
+                  <span className="mt-2 w-1 h-1 rounded-full bg-orange-400/70 shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}

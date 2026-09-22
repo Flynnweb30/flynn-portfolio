@@ -36,13 +36,13 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
             <UserCheck className="w-3.5 h-3.5" />
             <span>ABOUT FLYNN JAMES</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Not Just a Dialing Machine.{' '}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               A Strategic Pipeline Partner.
             </span>
           </h2>
@@ -62,7 +62,7 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
 
             <p>
               Hi, I’m <strong className="text-white font-semibold">Flynn James Q. Pontino</strong>. Over the last decade, 
-              I’ve specialized in one mission: <span className="text-cyan-300 font-medium">generating qualified sales opportunities out of thin air</span> for 
+              I’ve specialized in one mission: <span className="text-blue-300 font-medium">generating qualified sales opportunities out of thin air</span> for 
               agencies, high-growth SaaS startups, B2B IT companies, and professional service providers.
             </p>
 
@@ -78,7 +78,7 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
             </p>
 
             {/* Pull Quote Box */}
-            <div className="p-5 rounded-xl bg-slate-900/90 border-l-4 border-cyan-400 border-y border-r border-slate-800 shadow-inner">
+            <div className="p-5 rounded-xl bg-slate-900/90 border-l-4 border-blue-400 border-y border-r border-slate-800 shadow-inner">
               <p className="text-sm sm:text-base font-medium text-slate-200 italic">
                 “A calendar invite is only as valuable as the deal it generates. My job isn’t simply to book a 15-minute slot—it’s 
                 to ensure your Account Executive sits down with an informed, engaged decision-maker ready to solve a real commercial problem.”
@@ -93,7 +93,7 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
             <div className="pt-2 flex flex-wrap gap-4">
               <button
                 onClick={onOpenContact}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 rounded-lg shadow-md shadow-cyan-500/20 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-slate-950 bg-blue-400 hover:bg-blue-300 rounded-lg shadow-md shadow-blue-500/20 transition-all"
                 id="about-contact-btn"
               >
                 <span>Work With Flynn</span>
@@ -114,7 +114,7 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
           <div className="lg:col-span-5">
             <div className="bg-[#0f172a] rounded-2xl border border-slate-800 p-6 sm:p-7 shadow-xl space-y-6">
               <h4 className="text-lg font-bold text-white font-heading flex items-center gap-2">
-                <Award className="w-5 h-5 text-cyan-400" />
+                <Award className="w-5 h-5 text-blue-400" />
                 <span>Flynn’s Core Operating DNA</span>
               </h4>
 
@@ -156,11 +156,11 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
               <div className="pt-4 border-t border-slate-800/80 grid grid-cols-2 gap-3 text-xs">
                 <div className="bg-[#070b14] p-2.5 rounded-lg border border-slate-800">
                   <span className="text-slate-400 block text-[11px]">Primary Calling Hours</span>
-                  <span className="text-cyan-300 font-semibold">US / UK / ANZ Timezones</span>
+                  <span className="text-blue-300 font-semibold">US / UK / ANZ Timezones</span>
                 </div>
                 <div className="bg-[#070b14] p-2.5 rounded-lg border border-slate-800">
                   <span className="text-slate-400 block text-[11px]">Key Certification/Tier</span>
-                  <span className="text-cyan-300 font-semibold">Level 4 Tier Achieved</span>
+                  <span className="text-blue-300 font-semibold">Level 4 Tier Achieved</span>
                 </div>
               </div>
             </div>
@@ -175,12 +175,12 @@ export const AboutMe: React.FC<AboutMeProps> = ({ onOpenContact }) => {
             return (
               <div
                 key={pillar.title}
-                className="bg-[#0f172a]/60 hover:bg-[#0f172a] border border-slate-800/80 hover:border-cyan-500/40 p-6 rounded-xl transition-all duration-200 group"
+                className="bg-[#0f172a]/60 hover:bg-[#0f172a] border border-slate-800/80 hover:border-blue-500/40 p-6 rounded-xl transition-all duration-200 group"
               >
-                <div className="w-10 h-10 rounded-lg bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-lg bg-blue-950/80 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4 group-hover:scale-110 transition-transform">
                   <Icon className="w-5 h-5" />
                 </div>
-                <h4 className="text-base font-bold text-white font-heading mb-2 group-hover:text-cyan-300 transition-colors">
+                <h4 className="text-base font-bold text-white font-heading mb-2 group-hover:text-blue-300 transition-colors">
                   {pillar.title}
                 </h4>
                 <p className="text-xs text-slate-400 leading-relaxed">

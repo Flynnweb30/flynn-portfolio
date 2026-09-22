@@ -38,7 +38,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ caseStudy, onClo
 
         <div className="p-7 sm:p-10 border-b border-slate-800/60 pr-16">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-mono tracking-wider mb-5">
-            <span className="text-amber-400/80 uppercase">{caseStudy.industry}</span>
+            <span className="text-orange-400/80 uppercase">{caseStudy.industry}</span>
             <span className="text-slate-700">·</span>
             <span className="text-slate-500">{caseStudy.region}</span>
             <span className="text-slate-700">·</span>
@@ -49,9 +49,9 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ caseStudy, onClo
             {caseStudy.title}
           </h2>
 
-          <div className="mt-6 inline-flex items-baseline gap-3 px-4 py-2 bg-amber-400/5 border border-amber-400/20 rounded-lg">
-            <span className="text-[10.5px] font-mono text-amber-400/70 uppercase tracking-wider">Headline outcome</span>
-            <span className="text-[18px] font-bold text-amber-400 tabular">{caseStudy.headlineMetric}</span>
+          <div className="mt-6 inline-flex items-baseline gap-3 px-4 py-2 bg-orange-400/5 border border-orange-400/20 rounded-lg">
+            <span className="text-[10.5px] font-mono text-orange-400/70 uppercase tracking-wider">Headline outcome</span>
+            <span className="text-[18px] font-bold text-orange-400 tabular">{caseStudy.headlineMetric}</span>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ caseStudy, onClo
             <ul className="space-y-2.5">
               {caseStudy.action.map((a, i) => (
                 <li key={i} className="flex items-start gap-3 text-[13.5px] text-slate-300 leading-relaxed">
-                  <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
                   <span>{a}</span>
                 </li>
               ))}
@@ -102,7 +102,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ caseStudy, onClo
           </div>
 
           {caseStudy.quote && (
-            <div className="border-l-2 border-amber-400/60 pl-5">
+            <div className="border-l-2 border-orange-400/60 pl-5">
               <p className="font-serif italic text-[15.5px] text-slate-200 leading-[1.6]">
                 "{caseStudy.quote.text}"
               </p>
@@ -134,7 +134,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ caseStudy, onClo
               onClose();
               onOpenContact();
             }}
-            className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
+            className="w-full sm:w-auto px-5 py-2.5 text-[12.5px] font-semibold text-slate-900 bg-orange-400 hover:bg-orange-300 rounded-md transition-colors inline-flex items-center justify-center gap-1.5"
           >
             <span>Start an inquiry</span>
             <ArrowRight className="w-3.5 h-3.5" />

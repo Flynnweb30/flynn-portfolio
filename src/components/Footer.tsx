@@ -50,21 +50,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 href={PERSONAL_INFO.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-amber-400 hover:border-slate-700 transition-colors"
+                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-400 hover:border-slate-700 transition-colors"
                 aria-label="LinkedIn profile"
               >
                 <Linkedin className="w-3.5 h-3.5" />
               </a>
               <a
                 href={`mailto:${PERSONAL_INFO.email}`}
-                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-amber-400 hover:border-slate-700 transition-colors"
+                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-400 hover:border-slate-700 transition-colors"
                 aria-label="Email"
               >
                 <Mail className="w-3.5 h-3.5" />
               </a>
               <a
                 href={`tel:${PERSONAL_INFO.phone.replace(/\s+/g, '')}`}
-                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-amber-400 hover:border-slate-700 transition-colors"
+                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-400 hover:border-slate-700 transition-colors"
                 aria-label="Phone"
               >
                 <Phone className="w-3.5 h-3.5" />
@@ -73,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 href={PERSONAL_INFO.resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-amber-400 hover:border-slate-700 transition-colors"
+                className="w-8 h-8 rounded-md bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-400 hover:border-slate-700 transition-colors"
                 aria-label="Resume"
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -89,7 +89,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   <a
                     href={item.page === 'home' ? '/' : `/${item.page}`}
                     onClick={(e) => { e.preventDefault(); onNavigate(item.page); }}
-                    className="text-[12.5px] text-slate-400 hover:text-amber-400 transition-colors"
+                    className="text-[12.5px] text-slate-400 hover:text-orange-400 transition-colors"
                   >
                     {item.label}
                   </a>
@@ -114,13 +114,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="space-y-2.5 text-[12.5px]">
               <a
                 href={`mailto:${PERSONAL_INFO.email}`}
-                className="block text-slate-400 hover:text-amber-400 transition-colors break-all"
+                className="block text-slate-400 hover:text-orange-400 transition-colors break-all"
               >
                 {PERSONAL_INFO.email}
               </a>
               <a
                 href={`tel:${PERSONAL_INFO.phone.replace(/\s+/g, '')}`}
-                className="block text-slate-400 hover:text-amber-400 transition-colors"
+                className="block text-slate-400 hover:text-orange-400 transition-colors"
               >
                 {PERSONAL_INFO.phone}
               </a>
@@ -142,7 +142,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
           <button
             onClick={scrollTop}
-            className="text-[11.5px] font-mono text-slate-500 hover:text-amber-400 transition-colors inline-flex items-center gap-1.5"
+            className="text-[11.5px] font-mono text-slate-500 hover:text-orange-400 transition-colors inline-flex items-center gap-1.5"
           >
             <span>Back to top</span>
             <ArrowUp className="w-3 h-3" />

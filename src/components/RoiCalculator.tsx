@@ -23,13 +23,13 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
-            <Calculator className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
+            <Calculator className="w-3.5 h-3.5 text-blue-400" />
             <span>INTERACTIVE PIPELINE CALCULATOR</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Estimate Your Revenue with an{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               Outbound Engine
             </span>
           </h2>
@@ -51,7 +51,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
                   <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     Target Discovery Meetings / Month
                   </label>
-                  <span className="text-lg font-bold text-cyan-300 font-heading">
+                  <span className="text-lg font-bold text-blue-300 font-heading">
                     {meetingsPerMonth} Meetings
                   </span>
                 </div>
@@ -62,7 +62,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
                   step="2"
                   value={meetingsPerMonth}
                   onChange={(e) => setMeetingsPerMonth(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-400"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 mt-1">
                   <span>10 (Part-time)</span>
@@ -77,7 +77,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
                   <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     Average Deal ACV / Lifetime Value
                   </label>
-                  <span className="text-lg font-bold text-cyan-300 font-heading">
+                  <span className="text-lg font-bold text-blue-300 font-heading">
                     ${averageDealSize.toLocaleString()}
                   </span>
                 </div>
@@ -88,7 +88,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
                   step="500"
                   value={averageDealSize}
                   onChange={(e) => setAverageDealSize(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-400"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 mt-1">
                   <span>$1,000 (Low ticket)</span>
@@ -103,7 +103,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
                   <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     AE / Closer Conversion Rate
                   </label>
-                  <span className="text-lg font-bold text-cyan-300 font-heading">
+                  <span className="text-lg font-bold text-blue-300 font-heading">
                     {closeRate}% Close Rate
                   </span>
                 </div>
@@ -114,7 +114,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
                   step="1"
                   value={closeRate}
                   onChange={(e) => setCloseRate(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-400"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 mt-1">
                   <span>10% Conservative</span>
@@ -132,8 +132,8 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
             </div>
 
             {/* Right: Projected Revenue Card */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-[#070b14] to-[#0a0f1c] p-6 rounded-xl border border-cyan-500/40 text-center space-y-5 shadow-inner">
-              <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest block">
+            <div className="lg:col-span-5 bg-gradient-to-br from-[#070b14] to-[#0a0f1c] p-6 rounded-xl border border-blue-500/40 text-center space-y-5 shadow-inner">
+              <span className="text-xs font-bold text-blue-400 uppercase tracking-widest block">
                 Projected Pipeline Revenue
               </span>
 
@@ -161,7 +161,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenContact }) =
 
               <button
                 onClick={onOpenContact}
-                className="w-full py-3 text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-white rounded-xl shadow-md shadow-cyan-500/30 transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-3 text-xs font-bold text-slate-950 bg-gradient-to-r from-blue-400 to-blue-300 hover:from-blue-300 hover:to-white rounded-xl shadow-md shadow-blue-500/30 transition-all flex items-center justify-center gap-1.5"
               >
                 <span>Hire Flynn to Hit This Target</span>
                 <ArrowRight className="w-4 h-4" />

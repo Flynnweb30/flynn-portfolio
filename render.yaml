@@ -1,9 +1,9 @@
 services:
   - type: web
     name: flynn-sdr-portfolio
-    runtime: static
+    env: static
     branch: main
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --no-audit --no-fund && npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
     routes:
@@ -11,18 +11,6 @@ services:
         source: /*
         destination: /index.html
     headers:
-      - path: /sitemap.xml
-        name: Content-Type
-        value: application/xml; charset=UTF-8
-      - path: /sitemap.xml
-        name: Cache-Control
-        value: public, max-age=0, must-revalidate
-      - path: /robots.txt
-        name: Content-Type
-        value: text/plain; charset=UTF-8
-      - path: /robots.txt
-        name: Cache-Control
-        value: public, max-age=0, must-revalidate
       - path: /*
         name: X-Frame-Options
         value: SAMEORIGIN

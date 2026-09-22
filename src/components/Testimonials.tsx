@@ -9,13 +9,13 @@ export const Testimonials: React.FC = () => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
-            <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-3">
+            <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
             <span>ENDORSEMENTS & PEER PRAISE</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Trusted by Sales Leaders &{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
               Agency Directors
             </span>
           </h2>
@@ -29,26 +29,26 @@ export const Testimonials: React.FC = () => {
           {TESTIMONIALS.map((test) => (
             <div
               key={test.id}
-              className="bg-[#0f172a] rounded-2xl border border-slate-800 p-6 sm:p-8 flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 group"
+              className="bg-[#0f172a] rounded-2xl border border-slate-800 p-6 sm:p-8 flex flex-col justify-between hover:border-blue-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-blue-950/20 group"
               id={`testimonial-${test.id}`}
             >
               <div>
                 {/* 5-Star Rating & Verified Badge */}
                 <div className="flex items-center justify-between gap-2 mb-4">
-                  <div className="flex text-amber-400 gap-0.5">
+                  <div className="flex text-orange-400 gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      <Star key={i} className="w-4 h-4 fill-orange-400 text-orange-400" />
                     ))}
                   </div>
 
-                  <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider bg-cyan-950/80 border border-cyan-500/30 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold text-blue-300 uppercase tracking-wider bg-blue-950/80 border border-blue-500/30 px-2 py-0.5 rounded-full">
                     Verified Performance
                   </span>
                 </div>
 
                 {/* Quote Text */}
                 <p className="text-sm sm:text-base text-slate-200 leading-relaxed italic relative">
-                  <Quote className="w-6 h-6 text-cyan-500/20 absolute -top-2 -left-2 pointer-events-none" />
+                  <Quote className="w-6 h-6 text-blue-500/20 absolute -top-2 -left-2 pointer-events-none" />
                   "{test.quote}"
                 </p>
               </div>
@@ -59,14 +59,14 @@ export const Testimonials: React.FC = () => {
                   <img
                     src={test.avatarUrl}
                     alt={test.author}
-                    className="w-12 h-12 rounded-full object-cover border border-cyan-500/40"
+                    className="w-12 h-12 rounded-full object-cover border border-blue-500/40"
                     loading="lazy"
                   />
                   <div>
                     <h4 className="text-sm font-bold text-white font-heading">
                       {test.author}
                     </h4>
-                    <p className="text-xs text-cyan-400/90 font-medium">
+                    <p className="text-xs text-blue-400/90 font-medium">
                       {test.title} · <span className="text-slate-300">{test.company}</span>
                     </p>
                     <span className="text-[11px] text-slate-500 block mt-0.5">

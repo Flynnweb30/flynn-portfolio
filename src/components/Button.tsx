@@ -33,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
     lg: 'px-6 py-3.5 text-[14px]',
   };
   const variants = {
-    primary: 'bg-amber-400 text-slate-900 hover:bg-amber-300 active:bg-amber-500',
+    primary: 'bg-orange-400 text-slate-900 hover:bg-orange-300 active:bg-orange-500',
     secondary: 'bg-slate-800/80 text-slate-100 hover:bg-slate-700/80 border border-slate-700/60',
     ghost: 'text-slate-300 hover:text-white hover:bg-slate-800/50',
   };

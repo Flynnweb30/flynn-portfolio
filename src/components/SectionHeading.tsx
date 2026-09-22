@@ -28,7 +28,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
     >
       {(index || eyebrow) && (
         <div className={`flex items-center gap-3 mb-5 ${align === 'center' ? 'justify-center' : ''}`}>
-          {index && <span className="text-[11px] font-mono text-amber-400/80 tracking-wider">{index}</span>}
+          {index && <span className="text-[11px] font-mono text-orange-400/80 tracking-wider">{index}</span>}
           {index && eyebrow && <span className="h-px w-6 bg-slate-700" />}
           {eyebrow && (
             <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">{eyebrow}</span>
@@ -41,7 +41,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
         {titleAccent && (
           <>
             {' '}
-            <span className="font-serif italic text-amber-400/90">{titleAccent}</span>
+            <span className="font-serif italic text-orange-400/90">{titleAccent}</span>
           </>
         )}
       </h2>
