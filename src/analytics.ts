@@ -2,7 +2,7 @@
  * Flynn James Portfolio — Analytics, inquiry forms, UX instrumentation
  * ========================================================================== */
 
-/** GA4 configuration. Keep the requested key names unchanged. */
+/** GA4 configuration */
 export const ANALYTICS_CONFIG = {
   GA4_ID: 'G-WNF4GDZVK5',
   ENABLED: true,
@@ -10,7 +10,7 @@ export const ANALYTICS_CONFIG = {
   DELAY_MS: 2000,
 };
 
-/** EmailJS configuration. Keep the requested key names unchanged. */
+/** EmailJS configuration */
 export const EMAILJS_CONFIG = {
   PUBLIC_KEY: 'crekfvN6H352DXAfx',
   SERVICE_ID: 'service_av4pfmh',
@@ -41,7 +41,7 @@ declare global {
 }
 
 /**
- * Debounce a function while preserving the caller's `this` context.
+ * Debounce a function while preserving the caller's this context.
  */
 export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
   let timer: number | undefined;
@@ -103,10 +103,9 @@ export function trackPageView(title: string, path = window.location.pathname): v
 }
 
 /**
- * Formats a submission timestamp safely across all browsers and engines.
- * Avoids mixing dateStyle/timeStyle with timeZoneName which causes Intl TypeError.
+ * Formats submission date safely without combining incompatible Intl dateStyle and timeZoneName options.
  */
-function getSafeTimestamp(): string {
+function formatSubmissionDate(): string {
   try {
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
@@ -160,7 +159,7 @@ function initEmailJS(): Promise<void> {
       existing.addEventListener('load', initialize, { once: true });
       existing.addEventListener(
         'error',
-        () => reject(new Error('EmailJS CDN failed to load.')),
+        () => reject(new Error('EmailJS script failed to load.')),
         { once: true },
       );
       return;
@@ -174,7 +173,7 @@ function initEmailJS(): Promise<void> {
     script.addEventListener('load', initialize, { once: true });
     script.addEventListener(
       'error',
-      () => reject(new Error('EmailJS CDN script load error.')),
+      () => reject(new Error('EmailJS CDN load error.')),
       { once: true },
     );
     document.head.appendChild(script);
@@ -184,9 +183,9 @@ function initEmailJS(): Promise<void> {
 }
 
 /**
- * Dual-strategy dispatcher: tries SDK, falls back to direct REST API if CDN is blocked.
+ * Send email via browser SDK if available, or direct REST API fallback if CDN is blocked.
  */
-async function dispatchEmail(templateParams: Record<string, string>): Promise<void> {
+async function sendViaEmailJS(templateParams: Record<string, string>): Promise<void> {
   let sentViaSDK = false;
 
   try {
@@ -200,12 +199,12 @@ async function dispatchEmail(templateParams: Record<string, string>): Promise<vo
       sentViaSDK = true;
     }
   } catch (sdkError) {
-    console.warn('EmailJS browser SDK unavailable or blocked by extension; trying REST fallback...', sdkError);
+    console.warn('EmailJS SDK blocked or failed, falling back to direct REST endpoint...', sdkError);
   }
 
   if (sentViaSDK) return;
 
-  // Fallback: Direct EmailJS REST API call
+  // Direct REST API fallback
   const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
     headers: {
@@ -220,13 +219,13 @@ async function dispatchEmail(templateParams: Record<string, string>): Promise<vo
   });
 
   if (!response.ok) {
-    const errorText = await response.text().catch(() => 'Network response failed');
-    throw new Error(`EmailJS delivery failed with status ${response.status}: ${errorText}`);
+    const errorText = await response.text().catch(() => 'Network failure');
+    throw new Error(`EmailJS REST delivery error (${response.status}): ${errorText}`);
   }
 }
 
 /**
- * Display a site-wide toast notification.
+ * Display a site-wide toast message.
  */
 export function showToast(msg: string, isError = false): void {
   const toast = document.querySelector<HTMLElement>('[data-toast]');
@@ -240,8 +239,8 @@ export function showToast(msg: string, isError = false): void {
 }
 
 /**
- * Submit an inquiry form with validation, EmailJS delivery, and analytics tracking.
- * Returns true if sent successfully, false otherwise.
+ * Handle form submission, input validation, EmailJS delivery, and GA4 event tracking.
+ * Returns true if successful, false otherwise.
  */
 export async function sendInquiry(form: HTMLFormElement): Promise<boolean> {
   const formData = new FormData(form);
@@ -282,14 +281,14 @@ export async function sendInquiry(form: HTMLFormElement): Promise<boolean> {
   }
 
   const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-  const originalButtonHTML = button?.innerHTML || '';
+  const originalButtonHTML = button ? button.innerHTML : '';
   if (button) {
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
   }
 
   try {
-    const submittedAt = getSafeTimestamp();
+    const submittedAt = formatSubmissionDate();
     const pageUrl = window.location.href;
     const pagePath = window.location.pathname || '/';
     const sourcePage = document.title || 'Flynn James Portfolio';
@@ -316,7 +315,7 @@ export async function sendInquiry(form: HTMLFormElement): Promise<boolean> {
       user_agent: userAgent,
     };
 
-    await dispatchEmail(templateParams);
+    await sendViaEmailJS(templateParams);
 
     trackEvent('contact_form_submit', {
       form_name: form.dataset.formName || 'portfolio_contact',
@@ -334,7 +333,7 @@ export async function sendInquiry(form: HTMLFormElement): Promise<boolean> {
     );
     return true;
   } catch (error) {
-    console.error('EmailJS inquiry delivery error:', error);
+    console.error('EmailJS delivery error:', error);
     trackEvent('contact_form_error', {
       form_name: form.dataset.formName || 'portfolio_contact',
       form_type: formType,
@@ -356,16 +355,16 @@ export async function sendInquiry(form: HTMLFormElement): Promise<boolean> {
 }
 
 /**
- * Filter harmless browser-extension errors from polluting console execution.
+ * Filter harmless browser-extension noise from interrupting web application execution.
  */
-function attachExtensionErrorShields(): void {
+function attachExtensionShields(): void {
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
+    const msg = typeof reason === 'string' ? reason : reason?.message || '';
     if (
-      reason &&
-      typeof reason.message === 'string' &&
-      (reason.message.includes('chrome-extension://') ||
-        reason.message.includes('Extension context invalidated'))
+      msg.includes('chrome-extension://') ||
+      msg.includes('Extension context invalidated') ||
+      msg.includes('net::ERR_FAILED')
     ) {
       event.preventDefault();
     }
@@ -375,7 +374,7 @@ function attachExtensionErrorShields(): void {
     'error',
     (event) => {
       const source = event.filename || '';
-      if (source.startsWith('chrome-extension://')) {
+      if (source.startsWith('chrome-extension://') || source.includes('chrome-extension')) {
         event.preventDefault();
       }
     },
@@ -384,20 +383,20 @@ function attachExtensionErrorShields(): void {
 }
 
 /**
- * Attach all requested DOM behaviors once after the page is ready.
+ * Attach all requested DOM features after the page loads.
  */
 function attachDOMFeatures(): void {
   if (window._analyticsDomAttached) return;
   window._analyticsDomAttached = true;
 
-  attachExtensionErrorShields();
+  attachExtensionShields();
 
-  // Preload EmailJS SDK
+  // Preload SDK in background
   void initEmailJS().catch(() => {
-    // REST API fallback remains available
+    // REST API fallback remains operational
   });
 
-  // Navbar scroll state
+  // Sticky navbar state
   const navbar = document.querySelector<HTMLElement>('.navbar');
   if (navbar) {
     const updateNavbar = debounce(
@@ -408,7 +407,7 @@ function attachDOMFeatures(): void {
     updateNavbar();
   }
 
-  // Scroll reveal
+  // Scroll reveal observer
   const revealItems = document.querySelectorAll<HTMLElement>('.reveal');
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
@@ -426,7 +425,7 @@ function attachDOMFeatures(): void {
     revealItems.forEach((item) => item.classList.add('active'));
   }
 
-  // Delegated click tracking
+  // Delegated click analytics
   document.addEventListener('click', (event) => {
     const target = event.target as Element | null;
     const tracked = target?.closest<HTMLElement>('[data-track-click]');
@@ -453,7 +452,7 @@ function attachDOMFeatures(): void {
     }
   });
 
-  // Smooth internal scrolling
+  // Smooth scroll for hash links
   document.addEventListener('click', (event) => {
     const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
     if (!anchor) return;
@@ -467,20 +466,19 @@ function attachDOMFeatures(): void {
     window.history.pushState({}, '', `#${id}`);
   });
 
-  // Global inquiry form submit listener (fallback for lead magnet and non-React forms)
+  // Global submit listener for static/lead-magnet forms
   document.addEventListener('submit', async (event) => {
     const form = event.target as HTMLFormElement | null;
     if (!form?.matches('[data-inquiry-form]')) return;
-    // If the form has data-react-managed, let React handle it directly
     if (form.dataset.reactManaged === 'true') return;
     event.preventDefault();
     await sendInquiry(form);
   });
 
-  // Toast global API
+  // Toast API
   window.showToast = showToast;
 
-  // Footer year
+  // Footer dynamic year
   document.querySelectorAll<HTMLElement>('.footer-copy').forEach((element) => {
     element.textContent =
       element.textContent?.replace(/\d{4}/, String(new Date().getFullYear())) ||
@@ -502,7 +500,7 @@ function attachDOMFeatures(): void {
   }, 200);
   window.addEventListener('scroll', trackScrollDepth, { passive: true });
 
-  // Time-on-page milestones
+  // Time on page events
   window.setTimeout(() => trackEvent('time_on_page', { seconds: 30 }), 30000);
   window.setTimeout(() => trackEvent('time_on_page', { seconds: 60 }), 60000);
 
@@ -510,7 +508,7 @@ function attachDOMFeatures(): void {
 }
 
 /**
- * Start DOM features and delayed GA4 initialization.
+ * Start analytics and UX enhancements.
  */
 export function initializePortfolioAnalytics(): void {
   if (document.readyState === 'loading') {
