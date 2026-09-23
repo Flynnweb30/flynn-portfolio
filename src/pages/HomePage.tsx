@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
   ChevronRight,
   Download,
   Mail,
-  FileSpreadsheet,
-  CheckCircle2,
   Calendar,
-  Layers,
   Sparkles,
   Award,
   Send,
-  HelpCircle,
+  CheckCircle2,
 } from 'lucide-react';
 import { Section } from '../components/Section';
 import { SectionHeader } from '../components/SectionHeader';
@@ -20,7 +17,6 @@ import { StatCard } from '../components/StatCard';
 import { ServiceCard } from '../components/ServiceCard';
 import { CaseStudyCard } from '../components/CaseStudyCard';
 import { AudioPlayer } from '../components/AudioPlayer';
-import { PageMeta } from '../components/PageMeta';
 import {
   HERO_STATS,
   CORE_SERVICES,
@@ -52,6 +48,17 @@ export const HomePage: React.FC<HomePageProps> = ({
 }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  useEffect(() => {
+    document.title = 'Flynn James | Senior B2B Appointment Setter & Outbound Sales Specialist';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Senior B2B Appointment Setter & Outbound Specialist with 8+ years experience, 12,000+ cold calls logged, and $3.4M+ pipeline generated across US, UK & Australian markets.',
+      );
+    }
+  }, []);
+
   const featuredSamples = WORK_SAMPLES.slice(0, 3);
   const featuredCases = CASE_STUDIES.slice(0, 3);
   const featuredReviews = CLIENT_REVIEWS.slice(0, 3);
@@ -60,12 +67,6 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <>
-      <PageMeta
-        title="Flynn James | Senior B2B Appointment Setter & Outbound Sales Specialist"
-        description="Senior B2B Appointment Setter & Outbound Specialist with 8+ years experience, 12,000+ cold calls logged, and $3.4M+ pipeline generated across US, UK & Australian markets."
-        canonicalPath="/"
-      />
-
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 overflow-hidden hero-gradient">
         <div
@@ -211,7 +212,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   </div>
                 </div>
 
-                {/* Live Call Player Teaser */}
+                {/* Live Call Player */}
                 {coldCallSample && (
                   <div className="mt-5 space-y-2">
                     <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 uppercase tracking-wider">
@@ -235,7 +236,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
               </motion.div>
 
-              {/* Quick credibility bullet */}
+              {/* Quick Credibility Bullet */}
               <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-[12px] text-slate-400 flex items-center gap-3">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>
@@ -615,7 +616,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </Section>
 
-      {/* Final Call to Action Strip */}
+      {/* Final Call to Action */}
       <Section bordered className="py-20 bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950 text-center">
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/80 text-[12px] font-mono text-amber-400">
