@@ -15,7 +15,7 @@ export const EMAILJS_CONFIG = {
   PUBLIC_KEY: 'crekfvN6H352DXAfx',
   SERVICE_ID: 'service_av4pfmh',
   TEMPLATE_ID: 'template_dhede6o',
-  USER_CONFIRMATION_TEMPLATE_ID: 'template_user_confirmation',
+  USER_CONFIRMATION_TEMPLATE_ID: 'template_confirmation',
   TO_EMAIL: 'va.flynnjames@gmail.com',
 };
 

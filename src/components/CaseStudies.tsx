@@ -146,7 +146,7 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ onSelectCaseStudy, onO
             Want to Achieve Similar Quota Results on Your Team?
           </h3>
           <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-xl mx-auto">
-            Start an inquiry and I'll review your current cold calling scripts and target lists.
+            Book a quick strategy session. I'll audit your current cold calling scripts and target lists free of charge.
           </p>
           <button
             onClick={onOpenContact}

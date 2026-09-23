@@ -5,6 +5,7 @@ import { Footer } from './components/Footer';
 import { CaseStudyModal } from './components/CaseStudyModal';
 import { WorkSampleModal } from './components/WorkSampleModal';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
+import { Toast } from './components/Toast';
 import { CaseStudy, WorkSample, ServiceItem, PageId } from './types';
 import { useSEO, SEO_CONFIGS } from './hooks/useSEO';
 import { trackPageView } from './analytics';
@@ -62,6 +63,7 @@ export default function App() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [selectedSample, setSelectedSample] = useState<WorkSample | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [contactServicePreselect, setContactServicePreselect] = useState<string | undefined>(undefined);
 
   const pageFromLocation = useCallback((): { page: PageId; slug: string | null } => {
@@ -164,7 +166,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
       case 'about':
         return <AboutPage onNavigate={navigate} onOpenContact={navigateToContact} />;
       case 'services':
@@ -180,9 +182,9 @@ export default function App() {
           ? <BlogPostPage slug={currentBlogSlug} onNavigate={navigate} onOpenPost={navigateToBlogPost} onOpenContact={() => navigateToContact()} />
           : <BlogPage onNavigate={navigate} onOpenPost={navigateToBlogPost} onOpenContact={() => navigateToContact()} />;
       case 'contact':
-        return <ContactPage initialService={contactServicePreselect} />;
+        return <ContactPage initialService={contactServicePreselect} onSuccessToast={setToastMessage} />;
       default:
-        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} />;
+        return <HomePage onNavigate={navigate} onOpenContact={navigateToContact} onSelectCaseStudy={setSelectedCaseStudy} onSelectSample={setSelectedSample} onSuccessToast={setToastMessage} />;
     }
   };
 
@@ -201,6 +203,7 @@ export default function App() {
       <CaseStudyModal caseStudy={selectedCaseStudy} onClose={() => setSelectedCaseStudy(null)} onOpenContact={() => { setSelectedCaseStudy(null); navigateToContact(); }} />
       <WorkSampleModal sample={selectedSample} onClose={() => setSelectedSample(null)} onOpenContact={() => { setSelectedSample(null); navigateToContact(); }} />
       <ServiceDetailModal service={selectedService} onClose={() => setSelectedService(null)} onOpenContact={(serviceName) => { setSelectedService(null); navigateToContact(serviceName); }} />
+      <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       <div data-toast role="status" aria-live="polite" className="site-toast" />
     </div>
   );

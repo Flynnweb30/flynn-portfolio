@@ -82,13 +82,13 @@ The portfolio includes a crawlable `/blog` hub plus five evergreen B2B outbound 
 
 ## Contact + EmailJS
 
-The `/contact` route is a straightforward, conversion-focused inquiry page. There is no website calendar or booking workflow. The same centralized inquiry handler is used by the homepage contact form and the dedicated Contact page.
+The `/contact` route is a straightforward, conversion-focused inquiry page. There is no website calendar or booking workflow. The dedicated Contact page uses the centralized inquiry handler; the homepage no longer contains a duplicate contact form.
 
 ### Two-template workflow
 
 1. Visitor submits the inquiry form.
 2. EmailJS sends the complete submission to `va.flynnjames@gmail.com` using `template_dhede6o`.
-3. EmailJS sends the visitor confirmation using the linked Auto-Reply template `template_user_confirmation`.
+3. EmailJS sends the visitor confirmation using the linked Auto-Reply template `template_confirmation`.
 4. The visitor sees an immediate success state on the website.
 5. The owner can reply directly to the visitor because the owner template uses `{{reply_to}}`.
 
@@ -116,10 +116,10 @@ Current credentials are centralized in `src/analytics.ts` under `EMAILJS_CONFIG`
 5. Set Owner Notification To Email to `va.flynnjames@gmail.com`.
 6. Set Owner Notification Reply-To to `{{reply_to}}`.
 7. Set Owner Notification subject to `New portfolio inquiry — {{serviceNeeded}} — {{name}}`.
-8. Create `template_user_confirmation` as the **User Confirmation** template.
+8. Create `template_confirmation` as the **User Confirmation** template.
 9. Set its To Email to `{{email}}`.
 10. Set its Reply-To to `va.flynnjames@gmail.com`.
-11. Link `template_user_confirmation` as the Owner Notification template's Auto-Reply.
+11. Link `template_confirmation` as the Owner Notification template's Auto-Reply.
 12. Use the supplied files in `emailjs/` for the exact HTML.
 13. Do not add an EmailJS private key to the frontend.
 
@@ -137,15 +137,3 @@ Render remains configured as a static Vite site:
 - SPA fallback: `/*` → `/index.html`
 - Sitemap and robots files remain explicit static assets.
 
-
-## Production build optimization
-
-Vite is configured with a 600 KB chunk warning threshold and explicit vendor chunks for React, Framer Motion, and Lucide React. This keeps the application code and large shared dependencies separated and prevents avoidable chunk-size warnings while preserving the existing SPA architecture.
-
-Production command:
-
-`npm run build`
-
-Render Static Site settings:
-- Build Command: `npm install && npm run build`
-- Publish Directory: `dist`

@@ -29,7 +29,7 @@ export const PrivacyPage: React.FC = () => {
           </div>
           <div>
             <h2 className="text-[22px] font-bold text-white mb-4">What I collect</h2>
-            <p className="mb-3">When you submit the contact form or send an inquiry, you provide:</p>
+            <p className="mb-3">When you submit the contact form or request a strategy session, you provide:</p>
             <ul className="list-disc pl-6 space-y-1.5 text-slate-400">
               <li>Your name</li>
               <li>Your work email address</li>
