@@ -48,7 +48,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Sync with initialService prop if changed dynamically via navigation
   useEffect(() => {
     if (initialService) {
       setFormData((prev) => ({ ...prev, serviceNeeded: initialService }));
@@ -71,11 +70,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
     }
   };
 
+  const currentOptions = SERVICE_OPTIONS.includes(formData.serviceNeeded)
+    ? SERVICE_OPTIONS
+    : [formData.serviceNeeded, ...SERVICE_OPTIONS];
+
   return (
-    <section id="contact-form" className="relative py-12 sm:py-16">
+    <section id="contact-form" className="relative py-8 sm:py-12">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          {/* Left Column: Contact context */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          {/* Left Column: Context & Verified Channels */}
           <div className="lg:col-span-5 space-y-6">
             <div className="flex items-center gap-3">
               <img
@@ -94,17 +97,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
               </div>
             </div>
 
-            <h2 className="text-[30px] sm:text-[40px] font-bold text-white leading-[1.1] tracking-tight">
+            <h2 className="text-[28px] sm:text-[38px] font-bold text-white leading-[1.15] tracking-tight">
               Have a pipeline problem?
               <br />
               <span className="font-serif italic text-amber-400">Let&apos;s diagnose it.</span>
             </h2>
-            <p className="text-[14.5px] sm:text-[15px] text-slate-300 leading-[1.75]">
+            <p className="text-[14px] sm:text-[15px] text-slate-300 leading-relaxed">
               Tell me what you sell, who you want to reach, and where the current outbound motion is
               breaking down. I&apos;ll review the details and reply with a practical next step.
             </p>
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 pt-1">
               <a
                 href={`mailto:${PERSONAL_INFO.email}`}
                 className="block group p-4 bg-slate-900/60 backdrop-blur-sm border border-slate-700/60 hover:border-amber-400/40 rounded-lg transition-colors"
@@ -203,11 +206,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.4 }}
               className="bg-slate-900/70 backdrop-blur-md border border-slate-700/70 rounded-xl p-6 sm:p-8 lg:p-9 shadow-2xl"
             >
               {submitted ? (
-                <div className="py-14 text-center">
+                <div className="py-12 text-center">
                   <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-5">
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
@@ -220,7 +223,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
                   <button
                     type="button"
                     onClick={() => setSubmitted(false)}
-                    className="mt-7 px-5 py-2.5 text-[13px] font-semibold text-amber-400 hover:text-amber-300 transition-colors border border-amber-400/30 hover:border-amber-400/60 rounded-lg cursor-pointer"
+                    className="mt-6 px-5 py-2.5 text-[13px] font-semibold text-amber-400 hover:text-amber-300 transition-colors border border-amber-400/30 hover:border-amber-400/60 rounded-lg cursor-pointer"
                   >
                     Send another message →
                   </button>
@@ -234,7 +237,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
                   data-form-name="contact_page"
                   className="space-y-5"
                 >
-                  {/* Spam honeypot */}
+                  {/* Anti-spam honeypot */}
                   <input
                     type="text"
                     name="website"
@@ -244,10 +247,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
                     className="absolute -left-[9999px] h-px w-px opacity-0"
                   />
                   <input type="hidden" name="form_type" value="contact_page" />
-                  {/* Redundant fallback for templates expecting 'need' */}
                   <input type="hidden" name="need" value={formData.serviceNeeded} />
 
-                  <div className="pb-4 border-b border-slate-800">
+                  <div className="pb-3 border-b border-slate-800">
                     <h3 className="text-[18px] font-semibold text-white">Tell me about your outbound needs</h3>
                     <p className="text-[12.5px] text-slate-400 mt-1">
                       Fill out the details below to receive a diagnostic response and tailored proposal.
@@ -317,7 +319,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
                         onChange={(e) => setFormData({ ...formData, serviceNeeded: e.target.value })}
                         className={inputCls}
                       >
-                        {SERVICE_OPTIONS.map((opt) => (
+                        {currentOptions.map((opt) => (
                           <option key={opt} value={opt}>
                             {opt}
                           </option>
