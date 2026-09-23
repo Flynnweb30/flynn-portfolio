@@ -176,8 +176,8 @@ export function showToast(msg: string, isError = false): void {
 
 /**
  * Submit a centralized inquiry form through the Owner Notification EmailJS template.
- * The second EmailJS template is configured as the service's linked Auto-Reply,
- * so each successful owner notification automatically sends the visitor confirmation.
+ * The second EmailJS template is sent explicitly after the owner notification,
+ * so delivery is deterministic and both templates use the same field map.
  * @param {HTMLFormElement} form Inquiry form.
  * @returns {Promise<void>} Resolves after the owner notification request completes.
  */
@@ -236,6 +236,8 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
   const sourcePage = document.title || 'Flynn James Portfolio';
   const userAgent = navigator.userAgent.slice(0, 500);
 
+  let ownerSent = false;
+
   try {
     await initEmailJS();
     if (!window.emailjs) throw new Error('EmailJS is not available.');
@@ -261,9 +263,19 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
       user_agent: userAgent,
     };
 
+    // Send the owner notification first, then the visitor confirmation.
+    // The workflow uses exactly two EmailJS templates and both receive the same
+    // normalized field map, so no template variable is left undefined.
     await window.emailjs.send(
       EMAILJS_CONFIG.SERVICE_ID,
       EMAILJS_CONFIG.TEMPLATE_ID,
+      templateParams,
+    );
+    ownerSent = true;
+
+    await window.emailjs.send(
+      EMAILJS_CONFIG.SERVICE_ID,
+      EMAILJS_CONFIG.USER_CONFIRMATION_TEMPLATE_ID,
       templateParams,
     );
 
@@ -286,7 +298,9 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
       form_type: formType,
     });
     showToast(
-      'I couldn’t send your inquiry. Please email va.flynnjames@gmail.com directly.',
+      ownerSent
+        ? 'Your inquiry reached Flynn James, but the confirmation email could not be sent. Please check your email address or contact va.flynnjames@gmail.com directly.'
+        : 'I couldn’t send your inquiry. Please email va.flynnjames@gmail.com directly.',
       true,
     );
   } finally {

@@ -21,7 +21,7 @@ if (!sitemap.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.
 if (!sitemap.endsWith('</urlset>')) throw new Error('sitemap.xml is not closed with </urlset>.');
 
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-if (locs.length !== 15) throw new Error(`Expected 14 sitemap URLs, found ${locs.length}.`);
+if (locs.length !== 15) throw new Error(`Expected 15 sitemap URLs, found ${locs.length}.`);
 if (new Set(locs).size !== locs.length) throw new Error('sitemap.xml contains duplicate URLs.');
 for (const url of locs) {
   if (!url.startsWith(site)) throw new Error(`Sitemap URL is outside the production domain: ${url}`);

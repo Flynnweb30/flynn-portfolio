@@ -14,7 +14,7 @@ interface ContactPageProps {
 /**
  * Dedicated contact page using the same centralized inquiry form as the homepage.
  * No calendar or booking workflow is required; EmailJS handles owner notification
- * and the linked visitor confirmation template.
+ * and the explicit visitor confirmation template.
  */
 export const ContactPage: React.FC<ContactPageProps> = ({ initialService, onSuccessToast }) => {
   useSEO({
@@ -43,8 +43,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialService, onSucc
         photoClass="bg-photo-contact"
       />
 
-      <Section className="section-photo bg-photo-contact" bordered>
-        <div className="max-w-6xl mx-auto">
+      <Section className="relative section-photo bg-photo-contact">
+        <div className="absolute inset-0 bg-[#070b14]/45 pointer-events-none" aria-hidden="true" />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
             {[
               { icon: MailCheck, title: 'Direct response', text: 'Your inquiry goes straight to Flynn James and a confirmation is sent to your inbox.' },
@@ -67,7 +68,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialService, onSucc
 
           <div className="mb-6 flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-slate-500">
             <Clock3 className="w-3.5 h-3.5 text-amber-400" />
-            Simple inquiry · Email confirmation · Response within 24 hours
+            Simple inquiry · Owner notification · User confirmation
           </div>
 
           <ContactSection initialService={initialService} onSuccessToast={onSuccessToast} />

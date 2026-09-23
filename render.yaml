@@ -3,7 +3,7 @@ services:
     name: flynn-sdr-portfolio
     runtime: static
     branch: main
-    buildCommand: npm install buildCommand: npm ci && npm run buildbuildCommand: npm ci && npm run build npm run build
+    buildCommand: npm install --no-audit --no-fund && npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
     routes:

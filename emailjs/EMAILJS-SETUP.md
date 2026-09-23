@@ -4,7 +4,7 @@
 1. Owner Notification — `template_dhede6o`
 2. User Confirmation — `template_confirmation`
 
-The browser sends **only** the Owner Notification template. Configure `template_confirmation` as the linked **Auto-Reply** for the owner template in EmailJS. This keeps the workflow at exactly two templates and avoids a second browser-side email request.
+The browser sends both templates explicitly: Owner Notification and User Confirmation. The browser sends the two templates in sequence: Owner Notification first, then User Confirmation. This keeps the workflow at exactly two templates and makes delivery explicit and testable.
 
 ## Service
 - Public Key: `crekfvN6H352DXAfx`
@@ -25,7 +25,7 @@ The browser sends **only** the Owner Notification template. Configure `template_
 - From Name: `Flynn James`
 - Subject: `Thanks, {{name}} — I received your Flynn James inquiry`
 - HTML: `visitor-auto-reply-template.html`
-- Link this template as the Owner Notification template's Auto-Reply.
+- The frontend sends this template explicitly after the Owner Notification.
 
 ## Variables sent by the website
 `name`, `email`, `company`, `phone`, `serviceNeeded`, `need`, `targetMarket`, `meetingTarget`, `callingVolume`, `message`, `reply_to`, `to_email`, `submitted_at`, `source_page`, `page_url`, `page_path`, `form_type`, `user_agent`.
@@ -38,7 +38,7 @@ All variables used by the two templates are present in the submission payload.
 - Honeypot: `website` silently blocks basic bot submissions.
 - Invalid email and very short submissions are rejected before EmailJS.
 - Owner receives the complete inquiry.
-- Visitor receives the confirmation through EmailJS Auto-Reply.
+- Visitor receives the confirmation through the explicit `template_confirmation` send.
 
 ## Important
 Do not add an EmailJS Private Key to the frontend. The Public Key is safe for browser-side EmailJS use.

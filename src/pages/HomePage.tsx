@@ -6,6 +6,13 @@ import {
   Star,
   PhoneCall,
   TrendingUp,
+  Mail,
+  Linkedin,
+  ExternalLink,
+  Clock,
+  Shield,
+  Send,
+  CheckCircle2,
   Users,
   Building2,
   Rocket,
@@ -24,6 +31,7 @@ interface HomePageProps {
   onOpenContact: (serviceName?: string) => void;
   onSelectCaseStudy: (cs: CaseStudy) => void;
   onSelectSample: (s: WorkSample) => void;
+  onSuccessToast?: (msg: string) => void;
 }
 
 const TOOL_LOGOS = [
@@ -86,8 +94,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
   onOpenContact,
   onSelectCaseStudy,
+  onSuccessToast,
 }) => {
-
 
   const inputCls = 'w-full px-3.5 py-2.5 text-[15px] sm:text-[13.5px] bg-[#0b0f19] border border-slate-800 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:border-blue-400/60 transition-colors';
 
@@ -143,6 +151,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 className="mt-10 flex flex-wrap items-center gap-3"
               >
                 <Button variant="primary" size="lg" onClick={() => onOpenContact()} className="group ghl-cta-primary">
+                  <Mail className="w-4 h-4" />
                   Let's Talk
                 </Button>
                 <Button variant="secondary" size="lg" onClick={() => onNavigate('case-studies')} withArrow className="group">

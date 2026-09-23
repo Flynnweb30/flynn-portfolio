@@ -82,13 +82,13 @@ The portfolio includes a crawlable `/blog` hub plus five evergreen B2B outbound 
 
 ## Contact + EmailJS
 
-The `/contact` route is a straightforward, conversion-focused inquiry page. There is no website calendar or booking workflow. The dedicated Contact page uses the centralized inquiry handler; the homepage no longer contains a duplicate contact form.
+The `/contact` route is a straightforward, conversion-focused inquiry page. There is no website calendar or booking workflow. The same centralized inquiry handler is used by the homepage contact form and the dedicated Contact page.
 
 ### Two-template workflow
 
 1. Visitor submits the inquiry form.
 2. EmailJS sends the complete submission to `va.flynnjames@gmail.com` using `template_dhede6o`.
-3. EmailJS sends the visitor confirmation using the linked Auto-Reply template `template_confirmation`.
+3. EmailJS sends the visitor confirmation explicitly with `template_confirmation` after the owner notification.
 4. The visitor sees an immediate success state on the website.
 5. The owner can reply directly to the visitor because the owner template uses `{{reply_to}}`.
 
@@ -119,7 +119,7 @@ Current credentials are centralized in `src/analytics.ts` under `EMAILJS_CONFIG`
 8. Create `template_confirmation` as the **User Confirmation** template.
 9. Set its To Email to `{{email}}`.
 10. Set its Reply-To to `va.flynnjames@gmail.com`.
-11. Link `template_confirmation` as the Owner Notification template's Auto-Reply.
+11. Do not configure a third template. The frontend explicitly sends `template_confirmation` after the owner notification.
 12. Use the supplied files in `emailjs/` for the exact HTML.
 13. Do not add an EmailJS private key to the frontend.
 
@@ -129,7 +129,11 @@ The website sends: `name`, `email`, `company`, `phone`, `serviceNeeded`, `need`,
 
 Every placeholder used by the supplied templates is included in this payload.
 
-### Production deployment
+### Production build optimization
+
+Vite uses vendor chunk splitting for React and the UI libraries, with `build.chunkSizeWarningLimit` set to 900 KB. This reduces avoidable monolithic chunks while keeping the existing application architecture intact.
+
+## Production deployment
 
 Render remains configured as a static Vite site:
 - Build: `npm install && npm run build`

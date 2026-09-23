@@ -12,13 +12,12 @@ export default defineConfig(() => {
       },
     },
     build: {
-      chunkSizeWarningLimit: 700,
+      chunkSizeWarningLimit: 900,
       rollupOptions: {
         output: {
           manualChunks: {
-            react: ['react', 'react-dom'],
-            motion: ['framer-motion'],
-            icons: ['lucide-react'],
+            'react-vendor': ['react', 'react-dom'],
+            'ui-vendor': ['framer-motion', 'lucide-react'],
           },
         },
       },

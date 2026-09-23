@@ -23,4 +23,4 @@
 - Owner Notification: `template_dhede6o`
 - User Confirmation: `template_confirmation`
 
-The browser sends only the Owner Notification. Link the User Confirmation template as its EmailJS Auto-Reply so one successful submission produces both emails without requiring a second browser-side request.
+The browser sends exactly two templates in sequence: Owner Notification first, then User Confirmation. Both use the same normalized placeholder payload.
