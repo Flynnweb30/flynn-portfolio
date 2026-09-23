@@ -46,8 +46,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    const handleInquirySuccess = () => {
+    const handleInquirySuccess = (event: Event) => {
+      const detail = (event as CustomEvent<{ name?: string; email?: string }>).detail;
+      if (detail?.name || detail?.email) {
+        setFormData((current) => ({
+          ...current,
+          name: detail.name || current.name,
+          email: detail.email || current.email,
+        }));
+      }
       setSubmitted(true);
+      onSuccessToast?.('Inquiry sent successfully. Check your inbox for the confirmation email.');
     };
     window.addEventListener('flynn:inquiry-success', handleInquirySuccess);
     return () => window.removeEventListener('flynn:inquiry-success', handleInquirySuccess);
@@ -121,7 +130,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService }
                     <button onClick={resetForm} className="mt-8 text-[12.5px] font-medium text-slate-400 hover:text-white transition-colors cursor-pointer">Send another message →</button>
                   </div>
                 ) : (
-                  <form onSubmit={(e) => e.preventDefault()} data-inquiry-form data-form-name="contact-page" className="space-y-5" id="portfolio-contact-form">
+                  <form data-inquiry-form data-form-name="contact-page" className="space-y-5" id="portfolio-contact-form">
                     <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-px w-px opacity-0" />
                     <input type="hidden" name="form_type" value="contact_page" />
                     <div className="pb-5 border-b border-slate-800/60">

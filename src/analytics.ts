@@ -175,9 +175,9 @@ export function showToast(msg: string, isError = false): void {
 }
 
 /**
- * Submit a centralized inquiry form through the Owner Notification EmailJS template.
- * The second EmailJS template is sent explicitly after the owner notification,
- * so delivery is deterministic and both templates use the same field map.
+ * Submit a centralized inquiry form through exactly two EmailJS templates.
+ * The owner notification is sent first; the visitor confirmation is sent second.
+ * Both requests use the same normalized field map.
  * @param {HTMLFormElement} form Inquiry form.
  * @returns {Promise<void>} Resolves after the owner notification request completes.
  */
@@ -225,11 +225,14 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
     button.innerHTML = 'Sending inquiry... ⏳';
   }
 
-  const submittedAt = new Date().toLocaleString('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+  const submittedAt = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
     timeZoneName: 'short',
-  });
+  }).format(new Date());
 
   const pageUrl = window.location.href;
   const pagePath = window.location.pathname || '/';
@@ -278,6 +281,11 @@ async function sendInquiry(form: HTMLFormElement): Promise<void> {
       EMAILJS_CONFIG.USER_CONFIRMATION_TEMPLATE_ID,
       templateParams,
     );
+
+    trackEvent('contact_form_confirmation_sent', {
+      form_name: form.dataset.formName || 'portfolio_contact',
+      form_type: formType,
+    });
 
     trackEvent('contact_form_submit', {
       form_name: form.dataset.formName || 'portfolio_contact',
